@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MARO의 이미지 아카이브</title>
 <style>
+  @font-face {
+  font-family: 'OngleipParkDahyeon';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
+  font-weight: normal;
+  font-display: swap;
+}
 :root{--bg:#f6f4ef;--text:#171717;--muted:#77736c;--line:#ddd9d0;--card:#fffdf8;--accent:#171717}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,"Noto Sans KR",sans-serif}
 header{height:78px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;position:sticky;top:0;background:rgba(246,244,239,.94);backdrop-filter:blur(10px);z-index:10}
@@ -14,15 +20,18 @@ h1{font-size:clamp(46px,8vw,112px);line-height:.9;letter-spacing:-.065em;margin:
 .today,.gallery{max-width:1400px;margin:auto;padding:0 5vw 110px}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:22px;gap:16px}.section-title{font-size:28px;letter-spacing:-.04em}.section-meta{font-size:12px;color:var(--muted)}
 .feature{display:grid;grid-template-columns:1.5fr 1fr;background:var(--card);border:1px solid var(--line)}.main-image{width:100%;height:100%;min-height:620px;object-fit:cover;display:block;background:#e6ddd0}
 .prompt{padding:48px;display:flex;flex-direction:column;justify-content:space-between;min-width:0}.day{font-size:12px;color:var(--muted);letter-spacing:.12em}.prompt h2{font-size:40px;letter-spacing:-.05em;line-height:1.05;margin:20px 0;overflow-wrap:anywhere}
-.prompt blockquote{font-family:Georgia,serif;font-size:18px;line-height:1.6;margin:0;color:#38342e;white-space:pre-wrap;overflow-wrap:anywhere}.description{font-size:14px;line-height:1.7;color:#5e5a54;margin-top:18px;white-space:pre-wrap}
+.prompt blockquote{font-family:'OngleipParkDahyeon',sans-serif;font-size:12px;line-height:1.7;margin:0;color:#38342e;white-space:pre-wrap;overflow-wrap:anywhere}.description{font-size:14px;line-height:1.7;color:#5e5a54;margin-top:18px;white-space:pre-wrap}
 .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:25px}.tag{border:1px solid var(--line);padding:7px 10px;border-radius:99px;font-size:11px;color:#666}
 .button{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:14px 18px;font-size:12px;margin-top:30px;width:max-content}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:var(--card);border:1px solid var(--line);overflow:hidden}.thumb{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#e8e0d5}
-.card-info{padding:18px}.card-day{font-size:10px;color:var(--muted);letter-spacing:.12em}.card-title{font-size:17px;margin-top:8px;letter-spacing:-.03em}.card-prompt{font-size:12px;color:#777;line-height:1.5;margin-top:9px}
+.card-info{padding:18px}.card-day{font-size:10px;color:var(--muted);letter-spacing:.12em}.card-title{font-family:'OngleipParkDahyeon',sans-serif;font-size:17px;margin-top:8px;letter-spacing:-.03em}.card-prompt{font-size:12px;color:#777;line-height:1.5;margin-top:9px}
 .archive{background:#171717;color:white;padding:85px 5vw}.archive-inner{max-width:1400px;margin:auto}.archive h2{font-size:clamp(40px,6vw,80px);letter-spacing:-.06em;margin:0 0 35px}.archive-row{display:flex;justify-content:space-between;gap:20px;border-top:1px solid #444;padding:18px 0;color:#ddd;font-size:13px}
 footer{padding:35px 5vw;display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}.status{font-size:12px;color:var(--muted);margin-top:12px}
 @media(max-width:800px){header{padding:0 20px}nav{gap:14px}.hero{padding:65px 20px 50px}.today,.gallery{padding-left:20px;padding-right:20px}.feature{grid-template-columns:1fr}.main-image{min-height:0;max-height:70vh;aspect-ratio:4/3}.prompt{padding:30px}.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){nav a:nth-child(2){display:none}.grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.prompt h2{font-size:32px}}
+@media(max-width:520px){nav a:nth-child(2){display:none}.grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.prompt h2{font-family:'OngleipParkDahyeon',sans-serif;font-size:32px}}
+.prompt h2 {
+  font-family: 'OngleipParkDahyeon', sans-serif !important;
+}
 </style>
 </head>
 <body>
