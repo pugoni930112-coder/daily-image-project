@@ -383,10 +383,6 @@ footer {
 }
 
 @media(max-width:520px) {
-    nav a:nth-child(2) {
-        display: none
-    }
-
     .grid {
         grid-template-columns: 1fr
     }
