@@ -5,354 +5,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MARO의 이미지 아카이브</title>
-  <style>
-    @font-face {
-      font-family: 'OngleipParkDahyeon';
-      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
-      font-weight: normal;
-      font-display: swap;
-    }
 
-    :root {
-      --bg: #f6f4ef;
-      --text: #171717;
-      --muted: #77736c;
-      --line: #ddd9d0;
-      --card: #fffdf8;
-      --accent: #171717
-    }
+  <link rel="stylesheet" href="style.css">
 
-    * {
-      box-sizing: border-box
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Arial, "Noto Sans KR", sans-serif
-    }
-
-    header {
-      height: 78px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 5vw;
-      position: sticky;
-      top: 0;
-      background: rgba(246, 244, 239, .94);
-      backdrop-filter: blur(10px);
-      z-index: 10
-    }
-
-    .logo {
-      font-size: 15px;
-      font-weight: 800;
-      letter-spacing: .08em
-    }
-
-    nav {
-      display: flex;
-      gap: 28px;
-      font-size: 13px
-    }
-
-    nav a {
-      color: inherit;
-      text-decoration: none
-    }
-
-    .hero {
-      padding: 92px 5vw 70px;
-      max-width: 1400px;
-      margin: auto
-    }
-
-    .kicker {
-      font-size: 12px;
-      letter-spacing: .16em;
-      color: var(--muted);
-      margin-bottom: 18px
-    }
-
-    h1 {
-      font-size: clamp(46px, 8vw, 112px);
-      line-height: .9;
-      letter-spacing: -.065em;
-      margin: 0 0 28px;
-      max-width: 900px
-    }
-
-    .hero p {
-      font-size: 17px;
-      line-height: 1.7;
-      color: #5e5a54;
-      max-width: 560px
-    }
-
-    .today,
-    .gallery {
-      max-width: 1400px;
-      margin: auto;
-      padding: 0 5vw 110px
-    }
-
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      margin-bottom: 22px;
-      gap: 16px
-    }
-
-    .section-title {
-      font-size: 28px;
-      letter-spacing: -.04em
-    }
-
-    .section-meta {
-      font-size: 12px;
-      color: var(--muted)
-    }
-
-    .feature {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      background: var(--card);
-      border: 1px solid var(--line)
-    }
-
-    .main-image {
-      width: 100%;
-      height: 100%;
-      min-height: 620px;
-      object-fit: cover;
-      display: block;
-      background: #e6ddd0
-    }
-
-    .prompt {
-      padding: 48px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-width: 0
-    }
-
-    .day {
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: .12em
-    }
-
-    .prompt h2 {
-      font-size: 40px;
-      letter-spacing: -.05em;
-      line-height: 1.05;
-      margin: 20px 0;
-      overflow-wrap: anywhere
-    }
-
-    .prompt blockquote {
-      font-family: 'OngleipParkDahyeon', sans-serif;
-      font-size: 12px;
-      line-height: 1.7;
-      margin: 0;
-      color: #38342e;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere
-    }
-
-    .description {
-      font-size: 14px;
-      line-height: 1.7;
-      color: #5e5a54;
-      margin-top: 18px;
-      white-space: pre-wrap
-    }
-
-    .tags {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 25px
-    }
-
-    .tag {
-      border: 1px solid var(--line);
-      padding: 7px 10px;
-      border-radius: 99px;
-      font-size: 11px;
-      color: #666
-    }
-
-    .button {
-      display: inline-block;
-      background: var(--accent);
-      color: #fff;
-      text-decoration: none;
-      padding: 14px 18px;
-      font-size: 12px;
-      margin-top: 30px;
-      width: max-content
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      overflow: hidden
-    }
-
-    .thumb {
-      width: 100%;
-      aspect-ratio: 1/1;
-      object-fit: cover;
-      display: block;
-      background: #e8e0d5
-    }
-
-    .card-info {
-      padding: 18px
-    }
-
-    .card-day {
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: .12em
-    }
-
-    .card-title {
-      font-family: 'OngleipParkDahyeon', sans-serif;
-      font-size: 17px;
-      margin-top: 8px;
-      letter-spacing: -.03em
-    }
-
-    .card-prompt {
-      font-size: 12px;
-      color: #777;
-      line-height: 1.5;
-      margin-top: 9px
-    }
-
-    .archive {
-      background: #171717;
-      color: white;
-      padding: 85px 5vw
-    }
-
-    .archive-inner {
-      max-width: 1400px;
-      margin: auto
-    }
-
-    .archive h2 {
-      font-size: clamp(40px, 6vw, 80px);
-      letter-spacing: -.06em;
-      margin: 0 0 35px
-    }
-
-    .archive-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      border-top: 1px solid #444;
-      padding: 18px 0;
-      color: #ddd;
-      font-size: 13px
-    }
-
-    footer {
-      padding: 35px 5vw;
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--muted)
-    }
-
-    .status {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 12px
-    }
-
-    @media(max-width:800px) {
-      header {
-        padding: 0 20px
-      }
-
-      nav {
-        gap: 14px
-      }
-
-      .hero {
-        padding: 65px 20px 50px
-      }
-
-      .today,
-      .gallery {
-        padding-left: 20px;
-        padding-right: 20px
-      }
-
-      .feature {
-        grid-template-columns: 1fr
-      }
-
-      .main-image {
-        min-height: 0;
-        max-height: 70vh;
-        aspect-ratio: 4/3
-      }
-
-      .prompt {
-        padding: 30px
-      }
-
-      .grid {
-        grid-template-columns: repeat(2, 1fr)
-      }
-    }
-
-    @media(max-width:520px) {
-      nav a:nth-child(2) {
-        display: none
-      }
-
-      .grid {
-        grid-template-columns: 1fr
-      }
-
-      .section-head {
-        align-items: start;
-        flex-direction: column
-      }
-
-      .prompt h2 {
-        font-family: 'OngleipParkDahyeon', sans-serif;
-        font-size: 32px
-      }
-    }
-
-    .prompt h2 {
-      font-family: 'OngleipParkDahyeon', sans-serif !important;
-    }
-  </style>
 </head>
 
 <body>
   <header>
-    <div class="logo">ONE IMAGE, EVERY DAY.</div>
+
+    <a href="#today" class="logo">ONE IMAGE, EVERY DAY.</a>
     <nav><a href="#today">TODAY</a><a href="#gallery">GALLERY</a><a href="#archive">ARCHIVE</a><a
-        href="#about">ABOUT</a></nav>
+        href="#about">ABOUT</a><a href="#login" id="login-button">LOGIN</a></nav>
   </header>
   <main>
     <section class="hero">
@@ -378,9 +41,16 @@
         </div>
       </div>
     </section>
-    <section class="gallery" id="gallery">
+    <section class="recent" id="recent">
       <div class="section-head">
         <div class="section-title">Recent Images</div>
+        <div class="section-meta">RECENT 3</div>
+      </div>
+      <div class="grid" id="recent-grid"></div>
+    </section>
+    <section class="gallery" id="gallery">
+      <div class="section-head">
+        <div class="section-title">Gallery</div>
         <div class="section-meta" id="gallery-meta">0 IMAGES</div>
       </div>
       <div class="grid" id="gallery-grid"></div>
@@ -394,36 +64,36 @@
         </div>
       </div>
     </section>
-  </main>
-  <footer id="about"><span>© 2026 ONE IMAGE, EVERY DAY.</span><span>Made one prompt at a time.</span></footer>
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-    import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from './config.js';
+    <section id="login" class="login-section">
+      <div class="login-inner">
+        <button type="button" id="login-close" aria-label="닫기">×</button>
+        <div class="kicker">MEMBER ACCESS</div>
+        <h2>Join the archive.</h2>
+        <p>회원가입 후 관리자 승인 시 프롬프트를 볼 수 있습니다.</p>
 
-    const statusEl = document.getElementById('load-status');
-    function esc(value = '') { return String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
-    function dateLabel(value) { if (!value) return ''; const d = new Date(value + 'T00:00:00'); return Number.isNaN(d.getTime()) ? value : d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(); }
-    function tagsHtml(value) { const tags = String(value || '').split(',').map(s => s.trim()).filter(Boolean); return tags.map(t => `<span class="tag">${esc(t)}</span>`).join(''); }
-    async function start() {
-      if (!SUPABASE_URL.startsWith('https://') || SUPABASE_PUBLISHABLE_KEY.startsWith('PASTE_')) { statusEl.textContent = '설정이 필요합니다: config.js에 Supabase URL과 Publishable key를 입력해 주세요.'; return; }
-      const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-      const { data, error } = await supabase.from('public_daily_images')
-        .select('id,title,image_date,day_number,image_url,tags,description').order('image_date', { ascending: false }).order('day_number', { ascending: false });
-      if (error) { statusEl.textContent = '이미지를 불러오지 못했습니다. Supabase Data API와 읽기 정책을 확인해 주세요.'; console.error(error); return; }
-      const items = data || []; statusEl.textContent = `현재 ${items.length}개의 이미지가 기록되어 있습니다.`;
-      document.getElementById('gallery-meta').textContent = `${items.length} IMAGES`;
-      document.getElementById('archive-heading').innerHTML = `${items.length} DAYS.<br>${items.length} PROMPTS.`;
-      const featured = document.getElementById('featured');
-      if (items.length) {
-        const x = items[0];
-        document.getElementById('today-meta').textContent = `${dateLabel(x.image_date)} · DAY ${String(x.day_number || '').padStart(3, '0')}`;
-        featured.innerHTML = `<img class="main-image" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}"><div class="prompt"><div><div class="day">DAY ${String(x.day_number || '').padStart(3, '0')} / 365</div><h2>${esc(x.title || 'Untitled image')}</h2><blockquote>${esc(x.prompt || '')}</blockquote>${x.description ? `<div class="description">${esc(x.description)}</div>` : ''}<div class="tags">${tagsHtml(x.tags)}</div></div><a class="button" href="#gallery">VIEW ARCHIVE →</a></div>`;
-      } else { document.getElementById('today-meta').textContent = '아직 등록된 이미지가 없습니다.'; }
-      document.getElementById('gallery-grid').innerHTML = items.slice(0, 30).map(x => `<article class="card"><img class="thumb" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}" loading="lazy"><div class="card-info"><div class="card-day">DAY ${String(x.day_number || '').padStart(3, '0')} · ${esc(x.image_date || '')}</div><div class="card-title">${esc(x.title || 'Untitled image')}</div><div class="card-prompt">${esc((x.prompt || '').slice(0, 130))}${(x.prompt || '').length > 130 ? '…' : ''}</div></div></article>`).join('');
-      document.getElementById('archive-list').innerHTML = items.slice(0, 30).map(x => `<div class="archive-row"><span>DAY ${String(x.day_number || '').padStart(3, '0')} — ${esc(x.title || 'Untitled image')}</span><span>${esc(x.image_date || '')}</span></div>`).join('') || '<div class="archive-row"><span>등록된 프롬프트가 아직 없습니다.</span></div>';
-    }
-    start();
-  </script>
+        <form id="auth-form">
+          <label for="auth-email">이메일</label>
+          <input id="auth-email" type="email" required placeholder="이메일 주소">
+
+          <label for="auth-password">비밀번호</label>
+          <input id="auth-password" type="password" required minlength="6" placeholder="비밀번호 (6자 이상)">
+
+          <button type="submit" id="login-submit">로그인</button>
+          <button type="button" id="signup-button">회원가입 신청</button>
+          <p id="auth-status" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer id="about">
+    <div class="footer-copy">© 2026 ONE IMAGE, EVERY DAY</div>
+    <div class="footer-credit">MADE WITH LOVE BY MARO</div>
+    <div class="footer-message">A little image, a little story, every day.</div>
+  </footer>
+
+  <script type="module" src="script.js"></script>
+
 </body>
 
 </html>
