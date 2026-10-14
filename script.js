@@ -26,8 +26,9 @@ function closeLightbox() {
     lightboxImage.src = '';
 }
 
-document.addEventListener('click', (event) => {
-    const image = event.target.closest('img.main-image, img.thumb');
+
+document.addEventListener('pointerup', (event) => {
+    const image = event.target.closest?.('img.main-image, img.thumb');
 
     if (image) {
         lightboxImage.src = image.currentSrc || image.src;
@@ -36,10 +37,14 @@ document.addEventListener('click', (event) => {
         return;
     }
 
-    if (event.target === lightbox || event.target === lightboxClose) {
+    if (
+        event.target === lightbox ||
+        event.target === lightboxClose
+    ) {
         closeLightbox();
     }
 });
+
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
