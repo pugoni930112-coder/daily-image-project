@@ -558,3 +558,37 @@ main > .hero {
   padding-top: 92px;
 }
 
+
+@media (max-width: 520px) {
+    header {
+        height: auto;
+        min-height: 78px;
+        padding: 14px 16px;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .logo {
+        font-size: 12px;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+    }
+
+    nav {
+        flex: 1;
+        min-width: 0;
+        justify-content: flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
+        font-size: 11px;
+    }
+
+    nav a {
+        white-space: nowrap;
+    }
+
+    #login-button {
+        min-height: 34px;
+        padding: 0 12px;
+    }
+}
