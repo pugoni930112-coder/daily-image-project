@@ -82,8 +82,8 @@ function updateActiveMenu() {
         if (recent) recent.style.display = 'block';
     } else if (currentPage === '#gallery') {
         if (gallery) gallery.style.display = 'block';
-    } else if (currentPage === '#archive') {
-        if (archive) archive.style.display = 'block';
+    } else if (currentPage === '#member-prompts') {
+    if (archive) archive.style.display = 'block';
     } else if (currentPage === '#about') {
         // ABOUT 화면은 별도 콘텐츠를 만들 때 연결
     }
@@ -132,17 +132,21 @@ async function start() {
             .eq('id', session.user.id)
             .maybeSingle();
 
+            console.log('프로필 조회 결과:', profile);
+console.log('프로필 조회 오류:', profileError);
+
         if (!profileError && profile) {
             isApproved = profile.approved === true;
         }
     }
     if (!SUPABASE_URL.startsWith('https://') || SUPABASE_PUBLISHABLE_KEY.startsWith('PASTE_')) { statusEl.textContent = '설정이 필요합니다: config.js에 Supabase URL과 Publishable key를 입력해 주세요.'; return; }
     const { data, error } = await supabase.from('public_daily_images')
-        .select('id,title,image_date,day_number,image_url,tags,description').order('image_date', { ascending: false }).order('day_number', { ascending: false });
+       .select('id,title,image_date,day_number,image_url,tags,description').order('image_date', { ascending: false }).order('day_number', { ascending: false });
     if (error) { statusEl.textContent = '이미지를 불러오지 못했습니다. Supabase Data API와 읽기 정책을 확인해 주세요.'; console.error(error); return; }
     const items = data || []; statusEl.textContent = `현재 ${items.length}개의 이미지가 기록되어 있습니다.`;
     document.getElementById('gallery-meta').textContent = `${items.length} IMAGES`;
-    document.getElementById('archive-heading').innerHTML = `${items.length} DAYS.<br>${items.length} PROMPTS.`;
+    document.getElementById('archive-heading').innerHTML =
+    `${items.length} ${items.length === 1 ? 'DAY' : 'DAYS'}.<br>${items.length} ${items.length === 1 ? 'PROMPT' : 'PROMPTS'}.`;
     const featured = document.getElementById('featured');
     if (items.length) {
         const x = items[0];
@@ -166,7 +170,42 @@ async function start() {
     </article>`
             ).join('')
             : '';
-    document.getElementById('archive-list').innerHTML = items.slice(0, 30).map(x => `<div class="archive-row"><span>DAY ${String(x.day_number || '').padStart(3, '0')} — ${esc(x.title || 'Untitled image')}</span><span>${esc(x.image_date || '')}</span></div>`).join('') || '<div class="archive-row"><span>등록된 프롬프트가 아직 없습니다.</span></div>';
+    
+
+const archiveList = document.getElementById('archive-list');
+
+if (!isApproved) {
+    archiveList.innerHTML =
+        '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
+} else {
+    const { data: memberPrompts, error: promptError } = await supabase
+        .from('member_prompts')
+        .select('image_id, prompt');
+
+    if (promptError) {
+        console.error('프롬프트 조회 오류:', promptError);
+        archiveList.innerHTML =
+            '<div class="archive-row"><span>프롬프트를 불러오지 못했습니다.</span></div>';
+    } else {
+        const promptMap = new Map(
+            (memberPrompts || []).map(p => [p.image_id, p.prompt])
+        );
+
+        archiveList.innerHTML = items.slice(0, 30).map(x => `
+            <div class="archive-row">
+                <span>
+                    DAY ${String(x.day_number || '').padStart(3, '0')} — ${esc(x.title || 'Untitled image')}
+                    <br>
+                    ${esc(promptMap.get(x.id) || '등록된 프롬프트가 없습니다.')}
+                </span>
+                <span>${esc(x.image_date || '')}</span>
+            </div>
+        `).join('') ||
+        '<div class="archive-row"><span>등록된 이미지가 아직 없습니다.</span></div>';
+    }
+}
+
+
 }
 
 const loginSection = document.getElementById('login');
@@ -184,10 +223,15 @@ loginButton.addEventListener('click', async (event) => {
     const { data: { session } } = await supabase.auth.getSession();
 
     if (session) {
-        await supabase.auth.signOut();
-        await updateLoginButton();
-        alert('로그아웃되었습니다.');
-    } else {
+    await supabase.auth.signOut();
+    await updateLoginButton();
+
+    // 로그아웃 후 회원 전용 프롬프트 숨기기
+    document.getElementById('archive-list').innerHTML =
+        '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
+
+    alert('로그아웃되었습니다.');
+} else {
         loginSection.classList.add('is-open');
         await updateLoginButton();
     }
@@ -231,8 +275,9 @@ authForm.addEventListener('submit', async (event) => {
         authStatus.textContent = '로그인에 실패했어요. 이메일과 비밀번호를 확인해 주세요.';
     } else {
         authStatus.textContent = '로그인 성공!';
-        loginSection.classList.remove('is-open');
-        await updateLoginButton();
+loginSection.classList.remove('is-open');
+await updateLoginButton();
+await start();
     }
 });
 
