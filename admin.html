@@ -1,56 +1,446 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MARO 이미지 아카이브 · 관리자</title>
-<style>
-:root{--bg:#f6f4ef;--text:#171717;--muted:#77736c;--line:#ddd9d0;--card:#fffdf8}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,"Noto Sans KR",sans-serif}
-header{padding:24px 5vw;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:16px}.logo{font-size:14px;font-weight:800;letter-spacing:.08em}a{color:inherit}
-main{max-width:980px;margin:44px auto;padding:0 20px}.intro{margin-bottom:28px}.intro h1{font-size:clamp(30px,5vw,48px);letter-spacing:-.05em;margin:0 0 10px}.muted{color:var(--muted);font-size:13px;line-height:1.6}
-.panel{background:var(--card);border:1px solid var(--line);padding:26px;margin-bottom:24px}.panel h2{font-size:20px;margin:0 0 20px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}label{font-size:13px;font-weight:700}input,textarea{width:100%;font:inherit;font-size:14px;padding:12px;border:1px solid #cfc9be;background:white;border-radius:4px}textarea{min-height:120px;resize:vertical}input[type=file]{padding:10px}button,.button{border:0;background:#171717;color:#fff;padding:13px 17px;font:inherit;font-size:13px;cursor:pointer;text-decoration:none;display:inline-block}button.secondary{background:#e8e3d9;color:#171717}button:disabled{opacity:.5;cursor:wait}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.message{font-size:13px;line-height:1.6;margin-top:14px;white-space:pre-wrap}.item{border-top:1px solid var(--line);padding:16px 0;display:grid;grid-template-columns:90px 1fr auto;gap:16px;align-items:center}.item img{width:90px;height:90px;object-fit:cover;background:#e8e0d5}.item h3{margin:0 0 7px;font-size:16px}.item p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}.item-actions{display:flex;gap:7px;flex-wrap:wrap}.hidden{display:none!important}.notice{padding:12px;background:#f0ebe1;font-size:13px;line-height:1.6;margin-bottom:18px}
-@media(max-width:650px){.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.panel{padding:18px}.item{grid-template-columns:70px 1fr}.item img{width:70px;height:70px}.item-actions{grid-column:1/-1}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 승인 관리 · ONE IMAGE, EVERY DAY.</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 32px 20px;
+            background: #f8f7f4;
+            color: #292821;
+            font-family: Arial, sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        header {
+            max-width: 960px;
+            margin: 0 auto 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .home-link {
+            font-size: 13px;
+            color: #77766e;
+        }
+
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .intro, .muted {
+            color: #77766e;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .panel {
+            margin-top: 28px;
+            padding: 28px;
+            background: #fff;
+            border: 1px solid #e7e5df;
+            border-radius: 12px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            font-size: 13px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d8d6ce;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 6px;
+            padding: 11px 16px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: wait;
+        }
+
+        .primary {
+            background: #292821;
+            color: #fff;
+        }
+
+        .secondary {
+            background: #eeede8;
+            color: #292821;
+        }
+
+        .danger {
+            background: #f8e9e6;
+            color: #963e31;
+        }
+
+        .login-button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 14px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .member {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 18px;
+            padding: 20px 0;
+            border-top: 1px solid #eceae4;
+        }
+
+        .email {
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .meta {
+            margin-top: 7px;
+            color: #77766e;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #eeede8;
+            font-size: 12px;
+        }
+
+        .status.approved {
+            background: #e6f3e8;
+            color: #286b39;
+        }
+
+        .message {
+            margin-top: 14px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #8b4539;
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 24px 16px;
+            }
+
+            .panel {
+                padding: 20px 16px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .member {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .member button {
+                justify-self: start;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<header><div class="logo">ONE IMAGE, EVERY DAY. · ADMIN</div><a href="./index.html">공개 홈페이지 보기 ↗</a></header>
-<main><div class="intro"><h1>이미지 아카이브 관리</h1><div class="muted">로그인한 관리자만 이미지와 프롬프트를 등록하거나 수정할 수 있습니다.</div></div>
-<div class="notice">관리자 로그인은 Supabase Authentication에서 만든 사용자 계정을 사용합니다. Publishable key만 브라우저에서 사용하며 Secret key는 입력하지 마세요.</div>
-<section class="panel" id="login-panel"><h2>관리자 로그인</h2><form id="login-form" class="form-grid"><div class="field full"><label for="email">이메일</label><input id="email" type="email" autocomplete="username" required></div><div class="field full"><label for="password">비밀번호</label><input id="password" type="password" autocomplete="current-password" required></div><div class="field full"><button id="login-button" type="submit">로그인</button></div></form><div class="message" id="login-message" role="status"></div></section>
-<section class="panel hidden" id="admin-panel"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><h2 id="form-heading">새 이미지 등록</h2><button class="secondary" id="logout-button" type="button">로그아웃</button></div>
-<form id="image-form"><input type="hidden" id="row-id"><div class="form-grid">
-<div class="field"><label for="day-number">DAY 번호 *</label><input id="day-number" type="number" min="1" step="1" required placeholder="1"></div>
-<div class="field"><label for="image-date">이미지 날짜 *</label><input id="image-date" type="date" required></div>
-<div class="field full"><label for="title">제목 *</label><input id="title" type="text" required maxlength="200" placeholder="A Little Star on Stage"></div>
-<div class="field full"><label for="image-file">이미지 파일 <span id="file-required">(필수)</span></label><input id="image-file" type="file" accept="image/*"></div>
-<div class="field full"><label for="prompt">이미지 생성 프롬프트 *</label><textarea id="prompt" required placeholder="이미지를 만들 때 사용한 프롬프트"></textarea></div>
-<div class="field full"><label for="description">설명 (선택)</label><textarea id="description" placeholder="이미지에 대한 짧은 설명"></textarea></div>
-<div class="field full"><label for="tags">태그 (쉼표로 구분)</label><input id="tags" type="text" placeholder="chibi, concert, purple light"></div>
-</div><div class="actions"><button id="save-button" type="submit">등록하기</button><button id="cancel-edit" class="secondary hidden" type="button">수정 취소</button></div><div class="message" id="form-message" role="status"></div></form>
-</section>
-<section class="panel hidden" id="records-panel"><h2>등록된 이미지</h2><div class="muted" style="margin-bottom:12px">최근 등록된 이미지가 먼저 표시됩니다.</div><div id="records"></div><div class="message" id="records-message" role="status"></div></section>
-</main>
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from './config.js';
-const $=id=>document.getElementById(id);
-const loginPanel=$('login-panel'),adminPanel=$('admin-panel'),recordsPanel=$('records-panel');
-let supabase=null, currentUser=null, cachedRows=[];
-function say(id,msg){$(id).textContent=msg||'';}
-function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function resetForm(){ $('image-form').reset();$('row-id').value='';$('form-heading').textContent='새 이미지 등록';$('save-button').textContent='등록하기';$('file-required').textContent='(필수)';$('cancel-edit').classList.add('hidden');say('form-message','');}
-function showLoggedIn(user){currentUser=user;loginPanel.classList.add('hidden');adminPanel.classList.remove('hidden');recordsPanel.classList.remove('hidden');loadRows();}
-function showLoggedOut(){currentUser=null;loginPanel.classList.remove('hidden');adminPanel.classList.add('hidden');recordsPanel.classList.add('hidden');}
-async function loadRows(){say('records-message','불러오는 중…');const {data,error}=await supabase.from('daily_images').select('id,title,image_date,day_number,prompt,image_url,tags,description').order('image_date',{ascending:false}).order('day_number',{ascending:false});if(error){say('records-message','목록을 불러오지 못했습니다. Data API 노출 및 SELECT 정책을 확인해 주세요.\\n'+error.message);return;}cachedRows=data||[];say('records-message',`${cachedRows.length}개 이미지`);$('records').innerHTML=cachedRows.map(x=>`<article class="item"><img src="${esc(x.image_url)}" alt=""><div><h3>DAY ${String(x.day_number||'').padStart(3,'0')} · ${esc(x.title||'제목 없음')}</h3><p>${esc(x.image_date||'')}<br>${esc((x.prompt||'').slice(0,120))}</p></div><div class="item-actions"><button type="button" class="secondary" data-edit="${esc(x.id)}">수정</button></div></article>`).join('')||'<p class="muted">아직 등록된 이미지가 없습니다.</p>';document.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>beginEdit(b.dataset.edit)));}
-function beginEdit(id){const x=cachedRows.find(r=>String(r.id)===String(id));if(!x)return;$('row-id').value=x.id;$('day-number').value=x.day_number||'';$('image-date').value=x.image_date||'';$('title').value=x.title||'';$('prompt').value=x.prompt||'';$('description').value=x.description||'';$('tags').value=x.tags||'';$('image-file').value='';$('form-heading').textContent='이미지 수정';$('save-button').textContent='수정 저장';$('file-required').textContent='(교체할 때만 선택)';$('cancel-edit').classList.remove('hidden');say('form-message','이미지를 교체하지 않으려면 파일 선택을 비워 두세요.');window.scrollTo({top:0,behavior:'smooth'});}
-$('cancel-edit').addEventListener('click',resetForm);
-$('login-form').addEventListener('submit',async e=>{e.preventDefault();if(!supabase)return;say('login-message','로그인 중…');$('login-button').disabled=true;const {data,error}=await supabase.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});$('login-button').disabled=false;if(error){say('login-message','로그인하지 못했습니다. 이메일과 비밀번호를 확인해 주세요.');return;}say('login-message','');showLoggedIn(data.user);});
-$('logout-button').addEventListener('click',async()=>{await supabase.auth.signOut();showLoggedOut();});
-$('image-form').addEventListener('submit',async e=>{e.preventDefault();if(!currentUser){say('form-message','먼저 관리자 로그인을 해 주세요.');return;}const id=$('row-id').value;const file=$('image-file').files[0];if(!id&&!file){say('form-message','새 이미지 등록에는 이미지 파일이 필요합니다.');return;}if(file&&!file.type.startsWith('image/')){say('form-message','이미지 파일만 선택할 수 있습니다.');return;}const btn=$('save-button');btn.disabled=true;say('form-message','저장 중…');try{let imageUrl=null;if(file){const clean=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const path=`${currentUser.id}/${Date.now()}-${clean}`;const {error:uploadError}=await supabase.storage.from('images').upload(path,file,{cacheControl:'3600',upsert:false});if(uploadError)throw uploadError;const {data:publicData}=supabase.storage.from('images').getPublicUrl(path);imageUrl=publicData.publicUrl;}
-const payload={title:$('title').value.trim(),image_date:$('image-date').value,day_number:Number($('day-number').value),prompt:$('prompt').value.trim(),tags:$('tags').value.split(',').map(s=>s.trim()).filter(Boolean).join(', '),description:$('description').value.trim()||null};if(imageUrl)payload.image_url=imageUrl;
-let result;if(id)result=await supabase.from('daily_images').update(payload).eq('id',id);else{payload.image_url=imageUrl;result=await supabase.from('daily_images').insert(payload);}if(result.error)throw result.error;resetForm();say('form-message',id?'수정이 완료됐습니다.':'이미지가 등록됐습니다.');await loadRows();}catch(err){say('form-message','저장에 실패했습니다. 설정과 정책을 확인해 주세요.\\n'+(err.message||String(err)));}finally{btn.disabled=false;}});
-async function init(){if(!SUPABASE_URL.startsWith('https://')||SUPABASE_PUBLISHABLE_KEY.startsWith('PASTE_')){say('login-message','먼저 config.js에 Supabase Project URL과 Publishable key를 입력해 주세요.');$('login-button').disabled=true;return;}supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);const {data:{session}}=await supabase.auth.getSession();if(session)showLoggedIn(session.user);else showLoggedOut();supabase.auth.onAuthStateChange((_event,session)=>{if(session)showLoggedIn(session.user);else showLoggedOut();});}
-init();
-</script>
+    <header>
+        <a class="logo" href="./index.html">
+            ONE IMAGE, EVERY DAY. · ADMIN
+        </a>
+        <a class="home-link" href="./index.html">
+            메인 홈페이지로 이동 ↗
+        </a>
+    </header>
+
+    <main>
+        <h1>회원 승인 관리</h1>
+        <p class="intro">
+            가입 회원을 확인하고 프롬프트 열람 권한을 관리합니다.
+        </p>
+
+        <section id="login-panel" class="panel">
+            <h2>관리자 로그인</h2>
+            <p class="muted">관리자 계정으로 로그인해 주세요.</p>
+
+            <form id="login-form">
+                <label for="email">이메일</label>
+                <input id="email" type="email" autocomplete="username" required>
+
+                <label for="password">비밀번호</label>
+                <input id="password" type="password"
+                    autocomplete="current-password" required>
+
+                <button id="login-button" class="primary login-button"
+                    type="submit">로그인</button>
+            </form>
+
+            <p id="login-message" class="message"></p>
+        </section>
+
+        <section id="members-panel" class="panel hidden">
+            <div class="toolbar">
+                <div>
+                    <h2>가입 회원 목록</h2>
+                    <p id="member-count" class="muted">불러오는 중…</p>
+                </div>
+                <div>
+                    <button id="refresh-button" class="secondary" type="button">
+                        새로고침
+                    </button>
+                    <button id="logout-button" class="secondary" type="button">
+                        로그아웃
+                    </button>
+                </div>
+            </div>
+
+            <p id="list-message" class="message"></p>
+            <div id="members-list"></div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { createClient } from
+            'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        import {
+            SUPABASE_URL,
+            SUPABASE_PUBLISHABLE_KEY
+        } from './config.js';
+
+        const supabase = createClient(
+            SUPABASE_URL,
+            SUPABASE_PUBLISHABLE_KEY
+        );
+
+        const $ = id => document.getElementById(id);
+
+        const loginPanel = $('login-panel');
+        const membersPanel = $('members-panel');
+
+        function escapeHtml(value = '') {
+            return String(value).replace(/[&<>"']/g, char => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[char]);
+        }
+
+        function showLoggedOut(message = '') {
+            loginPanel.classList.remove('hidden');
+            membersPanel.classList.add('hidden');
+            $('login-message').textContent = message;
+            $('members-list').innerHTML = '';
+        }
+
+        function showLoggedIn() {
+            loginPanel.classList.add('hidden');
+            membersPanel.classList.remove('hidden');
+        }
+
+        async function loadMembers() {
+            $('list-message').textContent = '회원 목록을 불러오는 중…';
+            $('members-list').innerHTML = '';
+
+            const { data, error } = await supabase.rpc('admin_list_members');
+
+            if (error) {
+                $('member-count').textContent = '';
+                $('list-message').textContent =
+                    '회원 목록을 불러오지 못했습니다.\n' + error.message;
+                return;
+            }
+
+            const members = data || [];
+            $('member-count').textContent = `총 ${members.length}명`;
+            $('list-message').textContent = '';
+
+            if (members.length === 0) {
+                $('members-list').innerHTML =
+                    '<p class="muted">가입 회원이 없습니다.</p>';
+                return;
+            }
+
+            $('members-list').innerHTML = members.map(member => `
+                <article class="member">
+                    <div>
+                        <div class="email">${escapeHtml(member.email || '(이메일 없음)')}</div>
+                        <div class="meta">
+                            가입일: ${member.created_at
+                                ? escapeHtml(new Date(member.created_at).toLocaleString('ko-KR'))
+                                : '-'}
+                        </div>
+                        <span class="status ${member.approved ? 'approved' : ''}">
+                            ${member.approved ? '승인 완료' : '승인 대기'}
+                        </span>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="${member.approved ? 'danger' : 'primary'}"
+                        data-user-id="${escapeHtml(member.id)}"
+                        data-approved="${member.approved ? 'true' : 'false'}">
+                        ${member.approved ? '승인 취소' : '승인하기'}
+                    </button>
+                </article>
+            `).join('');
+
+            $('members-list').querySelectorAll('button[data-user-id]')
+                .forEach(button => {
+                    button.addEventListener('click', () => changeApproval(button));
+                });
+        }
+
+        async function changeApproval(button) {
+            const userId = button.dataset.userId;
+            const currentlyApproved = button.dataset.approved === 'true';
+            const nextValue = !currentlyApproved;
+
+            const action = nextValue ? '승인' : '승인 취소';
+
+            if (!confirm(`이 회원의 가입을 ${action}하시겠습니까?`)) {
+                return;
+            }
+
+            button.disabled = true;
+            $('list-message').textContent = `${action} 처리 중…`;
+
+            const { error } = await supabase.rpc('admin_set_member_approval', {
+                target_user_id: userId,
+                approval_value: nextValue
+            });
+
+            if (error) {
+                $('list-message').textContent =
+                    `${action}에 실패했습니다.\n${error.message}`;
+                button.disabled = false;
+                return;
+            }
+
+            $('list-message').textContent = `${action} 처리가 완료됐습니다.`;
+            await loadMembers();
+        }
+
+        async function verifyAdmin() {
+            const { data: { session }, error: sessionError } =
+                await supabase.auth.getSession();
+
+            if (sessionError || !session) {
+                showLoggedOut();
+                return;
+            }
+
+            // 관리자 전용 RPC가 권한을 확인하도록 요청
+            const { error } = await supabase.rpc('admin_list_members');
+
+            if (error) {
+                await supabase.auth.signOut();
+                showLoggedOut(
+                    '관리자 권한을 확인하지 못했습니다. 관리자 계정을 확인해 주세요.'
+                );
+                return;
+            }
+
+            showLoggedIn();
+            await loadMembers();
+        }
+
+        $('login-form').addEventListener('submit', async event => {
+            event.preventDefault();
+
+            const button = $('login-button');
+            button.disabled = true;
+            $('login-message').textContent = '로그인 중…';
+
+            try {
+                const { error } = await supabase.auth.signInWithPassword({
+                    email: $('email').value.trim(),
+                    password: $('password').value
+                });
+
+                if (error) {
+                    $('login-message').textContent =
+                        '로그인에 실패했습니다.\n' + error.message;
+                    return;
+                }
+
+                await verifyAdmin();
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        $('refresh-button').addEventListener('click', loadMembers);
+
+        $('logout-button').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            showLoggedOut('로그아웃했습니다.');
+        });
+
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_OUT' || !session) {
+                showLoggedOut();
+            }
+        });
+
+        await verifyAdmin();
+    </script>
 </body>
 </html>
