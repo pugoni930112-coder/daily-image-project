@@ -8,6 +8,46 @@ function dateLabel(value) { if (!value) return ''; const d = new Date(value + 'T
 function tagsHtml(value) { const tags = String(value || '').split(',').map(s => s.trim()).filter(Boolean); return tags.map(t => `<span class="tag">${esc(t)}</span>`).join(''); }
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
+
+/* 이미지 전체 보기 팝업 */
+const lightbox = document.createElement('div');
+lightbox.className = 'image-lightbox';
+lightbox.innerHTML = `
+    <button type="button" class="lightbox-close" aria-label="닫기">×</button>
+    <img src="" alt="전체 이미지 보기">
+`;
+document.body.appendChild(lightbox);
+
+const lightboxImage = lightbox.querySelector('img');
+const lightboxClose = lightbox.querySelector('.lightbox-close');
+
+function closeLightbox() {
+    lightbox.classList.remove('is-open');
+    lightboxImage.src = '';
+}
+
+document.addEventListener('click', (event) => {
+    const image = event.target.closest('img.main-image, img.thumb');
+
+    if (image) {
+        lightboxImage.src = image.currentSrc || image.src;
+        lightboxImage.alt = image.alt || '전체 이미지 보기';
+        lightbox.classList.add('is-open');
+        return;
+    }
+
+    if (event.target === lightbox || event.target === lightboxClose) {
+        closeLightbox();
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        closeLightbox();
+    }
+});
+
+
 function updateActiveMenu() {
     const currentPage = window.location.hash || '#today';
     window.scrollTo({ top: 0, behavior: 'auto' });
