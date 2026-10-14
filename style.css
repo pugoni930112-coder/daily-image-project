@@ -650,3 +650,70 @@ main > .hero {
         padding: 45px 10px 10px;
     }
 }
+
+/* MEMBER PROMPTS 이미지 카드 */
+.member-prompt-card {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+    padding: 28px 0;
+    border-bottom: 1px solid #454545;
+}
+
+.member-prompt-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.member-prompt-content {
+    min-width: 0;
+}
+
+.member-prompt-day {
+    margin-bottom: 10px;
+    color: #b6a18f;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+}
+
+.member-prompt-content h3 {
+     font-family: 'OngleipParkDahyeon', sans-serif;
+    margin: 0 0 14px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.member-prompt-content p {
+     font-family: 'OngleipParkDahyeon', sans-serif;
+    margin: 0;
+    color: #e0dedb;
+    font-size: 13px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+    .member-prompt-card {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .member-prompt-image {
+        aspect-ratio: 16 / 10;
+    }
+
+    .member-prompt-content h3 {
+        font-size: 18px;
+    }
+}
+
+/* MEMBER PROMPTS 이미지 클릭 안내 */
+.member-prompt-image {
+    cursor: zoom-in;
+}

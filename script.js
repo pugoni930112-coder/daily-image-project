@@ -28,7 +28,9 @@ function closeLightbox() {
 
 
 document.addEventListener('pointerup', (event) => {
-    const image = event.target.closest?.('img.main-image, img.thumb');
+    const image = event.target.closest?.(
+    'img.main-image, img.thumb, img.member-prompt-image'
+);
 
     if (image) {
         lightboxImage.src = image.currentSrc || image.src;
@@ -192,14 +194,22 @@ if (!isApproved) {
         );
 
         archiveList.innerHTML = items.slice(0, 30).map(x => `
-            <div class="archive-row">
-                <span>
-                    DAY ${String(x.day_number || '').padStart(3, '0')} — ${esc(x.title || 'Untitled image')}
-                    <br>
-                    ${esc(promptMap.get(x.id) || '등록된 프롬프트가 없습니다.')}
-                </span>
-                <span>${esc(x.image_date || '')}</span>
+            <article class="member-prompt-card">
+        <img
+            class="member-prompt-image"
+            src="${esc(x.image_url)}"
+            alt="${esc(x.title || 'Daily image')}"
+            loading="lazy"
+        >
+        <div class="member-prompt-content">
+            <div class="member-prompt-day">
+                DAY ${String(x.day_number || '').padStart(3, '0')}
+                · ${esc(x.image_date || '')}
             </div>
+            <h3>${esc(x.title || 'Untitled image')}</h3>
+            <p>${esc(promptMap.get(x.id) || '등록된 프롬프트가 없습니다.')}</p>
+        </div>
+    </article>
         `).join('') ||
         '<div class="archive-row"><span>등록된 이미지가 아직 없습니다.</span></div>';
     }
@@ -210,12 +220,34 @@ if (!isApproved) {
 
 const loginSection = document.getElementById('login');
 const loginButton = document.getElementById('login-button');
+
 async function updateLoginButton() {
     const { data: { session } } = await supabase.auth.getSession();
 
     loginButton.textContent = session ? 'LOGOUT' : 'LOGIN';
     loginButton.href = session ? '#logout' : '#login';
+
+    const adminMenu = document.getElementById('admin-menu');
+
+    if (adminMenu) {
+        let isAdmin = false;
+
+        if (session) {
+            const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('is_admin')
+                .eq('id', session.user.id)
+                .maybeSingle();
+
+            if (!error && profile) {
+                isAdmin = profile.is_admin === true;
+            }
+        }
+
+        adminMenu.style.display = isAdmin ? '' : 'none';
+    }
 }
+
 
 loginButton.addEventListener('click', async (event) => {
     event.preventDefault();
