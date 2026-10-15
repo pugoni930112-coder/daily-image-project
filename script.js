@@ -144,7 +144,9 @@ async function start() {
     if (!SUPABASE_URL.startsWith('https://') || SUPABASE_PUBLISHABLE_KEY.startsWith('PASTE_')) { statusEl.textContent = '설정이 필요합니다: config.js에 Supabase URL과 Publishable key를 입력해 주세요.'; return; }
     const { data, error } = await supabase.from('public_daily_images')
 
-        .select('id,title,image_date,day_number,image_url,tags,description,image_position_x,image_position_y,image_zoom')
+        
+.select('id,title,image_date,day_number,image_url,tags,description,image_position_x,image_position_y,image_zoom,prompt')
+
         .order('image_date', { ascending: false }).order('day_number', { ascending: false });
     if (error) { statusEl.textContent = '이미지를 불러오지 못했습니다. Supabase Data API와 읽기 정책을 확인해 주세요.'; console.error(error); return; }
     const items = data || []; statusEl.textContent = `현재 ${items.length}개의 이미지가 기록되어 있습니다.`;
