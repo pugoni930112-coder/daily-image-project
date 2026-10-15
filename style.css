@@ -1096,12 +1096,15 @@ main > .hero {
 
 /* ABOUT 모바일 화면 보정 */
 @media (max-width: 700px) {
+  
   .about-hero::before {
     left: 2%;
-    bottom: 0;
-    font-size: clamp(80px, 24vw, 150px);
-    letter-spacing: -5px;
+    bottom: 8px;
+    font-size: clamp(64px, 18vw, 110px);
+    letter-spacing: -4px;
+    color: rgba(117, 76, 51, 0.06);
   }
+
 
   .about-copy h1 {
     font-size: clamp(34px, 9vw, 48px);
