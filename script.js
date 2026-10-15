@@ -190,6 +190,7 @@ async function start() {
     if (previousUploadWrap) previousUploadWrap.remove();
 
     if (isApproved) {
+        console.log('업로드 버튼 생성 조건:', isApproved);
         const uploadWrap = document.createElement('div');
         uploadWrap.id = 'member-upload-wrap';
         uploadWrap.style.cssText =
