@@ -144,12 +144,16 @@ async function start() {
     if (!SUPABASE_URL.startsWith('https://') || SUPABASE_PUBLISHABLE_KEY.startsWith('PASTE_')) { statusEl.textContent = '설정이 필요합니다: config.js에 Supabase URL과 Publishable key를 입력해 주세요.'; return; }
     const { data, error } = await supabase.from('public_daily_images')
 
-        
-.select('id,title,image_date,day_number,image_url,tags,description,image_position_x,image_position_y,image_zoom,prompt')
+
+        .select('id,title,image_date,day_number,image_url,tags,description,image_position_x,image_position_y,image_zoom,prompt')
 
         .order('image_date', { ascending: false }).order('day_number', { ascending: false });
     if (error) { statusEl.textContent = '이미지를 불러오지 못했습니다. Supabase Data API와 읽기 정책을 확인해 주세요.'; console.error(error); return; }
-    const items = data || []; statusEl.textContent = `현재 ${items.length}개의 이미지가 기록되어 있습니다.`;
+    const items = data || []; console.log('이미지 조회 결과:', items);
+    console.log('각 이미지 프롬프트:', items.map(x => ({
+        title: x.title,
+        prompt: x.prompt
+    }))); statusEl.textContent = `현재 ${items.length}개의 이미지가 기록되어 있습니다.`;
     document.getElementById('gallery-meta').textContent = `${items.length} IMAGES`;
     document.getElementById('archive-heading').innerHTML =
         `${items.length} ${items.length === 1 ? 'DAY' : 'DAYS'}.<br>${items.length} ${items.length === 1 ? 'PROMPT' : 'PROMPTS'}.`;
@@ -210,11 +214,11 @@ async function start() {
 
 
 
-if (!isApproved) {
-    archiveList.innerHTML =
-        '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
-} else {
-    archiveList.innerHTML = items.slice(0, 30).map(x => `
+    if (!isApproved) {
+        archiveList.innerHTML =
+            '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
+    } else {
+        archiveList.innerHTML = items.slice(0, 30).map(x => `
         <article class="member-prompt-card">
             <img
                 class="member-prompt-image"
@@ -233,8 +237,8 @@ if (!isApproved) {
             </div>
         </article>
     `).join('') ||
-    '<div class="archive-row"><span>등록된 이미지가 아직 없습니다.</span></div>';
-}
+            '<div class="archive-row"><span>등록된 이미지가 아직 없습니다.</span></div>';
+    }
 
 
 
