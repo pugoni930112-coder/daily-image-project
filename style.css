@@ -1136,3 +1136,9 @@ main > .hero {
     letter-spacing: -1px;
   }
 }
+
+@media (max-width: 700px) {
+  .about-hero::before {
+    display: none;
+  }
+}
