@@ -207,47 +207,33 @@ async function start() {
     }
 
 
-    if (!isApproved) {
-        archiveList.innerHTML =
-            '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
-    } else {
-        const { data: memberPrompts, error: promptError } = await supabase
-            .from('member_prompts')
-            .select('image_id, prompt');
 
-        if (promptError) {
-            console.error('프롬프트 조회 오류:', promptError);
-            archiveList.innerHTML =
-                '<div class="archive-row"><span>프롬프트를 불러오지 못했습니다.</span></div>';
-        } else {
-            const promptMap = new Map(
-                (memberPrompts || []).map(p => [p.image_id, p.prompt])
-            );
-
-            archiveList.innerHTML = items.slice(0, 30).map(x => `
-            <article class="member-prompt-card">
-       
-<img
-    class="member-prompt-image"
-    src="${esc(x.image_url)}"
-    alt="${esc(x.title || 'Daily image')}"
-    loading="lazy"
-    style="object-position: ${Number(x.image_position_x ?? 50)}% ${Number(x.image_position_y ?? 50)}%; transform: scale(${Number(x.image_zoom ?? 1)});"
->
-
-        <div class="member-prompt-content">
-            <div class="member-prompt-day">
-                DAY ${String(x.day_number || '').padStart(3, '0')}
-                · ${esc(x.image_date || '')}
+if (!isApproved) {
+    archiveList.innerHTML =
+        '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
+} else {
+    archiveList.innerHTML = items.slice(0, 30).map(x => `
+        <article class="member-prompt-card">
+            <img
+                class="member-prompt-image"
+                src="${esc(x.image_url)}"
+                alt="${esc(x.title || 'Daily image')}"
+                loading="lazy"
+                style="object-position: ${Number(x.image_position_x ?? 50)}% ${Number(x.image_position_y ?? 50)}%; transform: scale(${Number(x.image_zoom ?? 1)});"
+            >
+            <div class="member-prompt-content">
+                <div class="member-prompt-day">
+                    DAY ${String(x.day_number || '').padStart(3, '0')}
+                    · ${esc(x.image_date || '')}
+                </div>
+                <h3>${esc(x.title || 'Untitled image')}</h3>
+                <p>${esc(x.prompt || '등록된 프롬프트가 없습니다.')}</p>
             </div>
-            <h3>${esc(x.title || 'Untitled image')}</h3>
-            <p>${esc(promptMap.get(x.id) || '등록된 프롬프트가 없습니다.')}</p>
-        </div>
-    </article>
-        `).join('') ||
-                '<div class="archive-row"><span>등록된 이미지가 아직 없습니다.</span></div>';
-        }
-    }
+        </article>
+    `).join('') ||
+    '<div class="archive-row"><span>등록된 이미지가 아직 없습니다.</span></div>';
+}
+
 
 
 }
