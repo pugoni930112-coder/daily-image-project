@@ -717,3 +717,52 @@ main > .hero {
 .member-prompt-image {
     cursor: zoom-in;
 }
+
+
+/* 이미지 표시 영역 편집기 */
+.image-editor {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--line, #ded8cf);
+  border-radius: 8px;
+  background: var(--card, #fffdf8);
+}
+
+.image-editor p {
+  font-size: 13px;
+  color: #777;
+  margin: 0 0 12px;
+}
+
+.image-crop-frame {
+  width: 100%;
+  max-width: 560px;
+  aspect-ratio: 4 / 3;
+  margin: 0 auto 16px;
+  overflow: hidden;
+  position: relative;
+  background: #e8e3da;
+  border-radius: 6px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.image-crop-frame:active {
+  cursor: grabbing;
+}
+
+.image-crop-frame img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  pointer-events: none;
+}
+
+#image-zoom {
+  display: block;
+  width: 100%;
+  margin: 10px 0 16px;
+}

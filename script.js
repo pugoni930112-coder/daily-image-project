@@ -29,8 +29,8 @@ function closeLightbox() {
 
 document.addEventListener('pointerup', (event) => {
     const image = event.target.closest?.(
-    'img.main-image, img.thumb, img.member-prompt-image'
-);
+        'img.main-image, img.thumb, img.member-prompt-image'
+    );
 
     if (image) {
         lightboxImage.src = image.currentSrc || image.src;
@@ -85,7 +85,7 @@ function updateActiveMenu() {
     } else if (currentPage === '#gallery') {
         if (gallery) gallery.style.display = 'block';
     } else if (currentPage === '#member-prompts') {
-    if (archive) archive.style.display = 'block';
+        if (archive) archive.style.display = 'block';
     } else if (currentPage === '#about') {
         // ABOUT 화면은 별도 콘텐츠를 만들 때 연결
     }
@@ -134,8 +134,8 @@ async function start() {
             .eq('id', session.user.id)
             .maybeSingle();
 
-            console.log('프로필 조회 결과:', profile);
-console.log('프로필 조회 오류:', profileError);
+        console.log('프로필 조회 결과:', profile);
+        console.log('프로필 조회 오류:', profileError);
 
         if (!profileError && profile) {
             isApproved = profile.approved === true;
@@ -143,28 +143,36 @@ console.log('프로필 조회 오류:', profileError);
     }
     if (!SUPABASE_URL.startsWith('https://') || SUPABASE_PUBLISHABLE_KEY.startsWith('PASTE_')) { statusEl.textContent = '설정이 필요합니다: config.js에 Supabase URL과 Publishable key를 입력해 주세요.'; return; }
     const { data, error } = await supabase.from('public_daily_images')
-       .select('id,title,image_date,day_number,image_url,tags,description').order('image_date', { ascending: false }).order('day_number', { ascending: false });
+
+        .select('id,title,image_date,day_number,image_url,tags,description,image_position_x,image_position_y,image_zoom')
+        .order('image_date', { ascending: false }).order('day_number', { ascending: false });
     if (error) { statusEl.textContent = '이미지를 불러오지 못했습니다. Supabase Data API와 읽기 정책을 확인해 주세요.'; console.error(error); return; }
     const items = data || []; statusEl.textContent = `현재 ${items.length}개의 이미지가 기록되어 있습니다.`;
     document.getElementById('gallery-meta').textContent = `${items.length} IMAGES`;
     document.getElementById('archive-heading').innerHTML =
-    `${items.length} ${items.length === 1 ? 'DAY' : 'DAYS'}.<br>${items.length} ${items.length === 1 ? 'PROMPT' : 'PROMPTS'}.`;
+        `${items.length} ${items.length === 1 ? 'DAY' : 'DAYS'}.<br>${items.length} ${items.length === 1 ? 'PROMPT' : 'PROMPTS'}.`;
     const featured = document.getElementById('featured');
     if (items.length) {
         const x = items[0];
         document.getElementById('today-meta').textContent = `${dateLabel(x.image_date)} · DAY ${String(x.day_number || '').padStart(3, '0')}`;
 
-        featured.innerHTML = `<img class="main-image" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}"><div class="prompt"><div class="day">DAY ${String(x.day_number || '').padStart(3, '0')} / 365</div><h2>${esc(x.title || 'Untitled image')}</h2>${isApproved ? `<blockquote>${esc(x.prompt || '')}</blockquote>` : '<p class="prompt-locked">프롬프트는 승인된 회원만 볼 수 있습니다.</p>'}${x.description ? `<div class="description">${esc(x.description)}</div>` : ''}<div class="tags">${tagsHtml(x.tags)}</div><a class="button" href="#gallery">VIEW ARCHIVE →</a></div>`;
+        featured.innerHTML = `
+<img class="main-image" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}" style="object-position: ${Number(x.image_position_x ?? 50)}% ${Number(x.image_position_y ?? 50)}%; transform: scale(${Number(x.image_zoom ?? 1)});">
+<div class="prompt"><div class="day">DAY ${String(x.day_number || '').padStart(3, '0')} / 365</div><h2>${esc(x.title || 'Untitled image')}</h2>${isApproved ? `<blockquote>${esc(x.prompt || '')}</blockquote>` : '<p class="prompt-locked">프롬프트는 승인된 회원만 볼 수 있습니다.</p>'}${x.description ? `<div class="description">${esc(x.description)}</div>` : ''}<div class="tags">${tagsHtml(x.tags)}</div><a class="button" href="#gallery">VIEW ARCHIVE →</a></div>`;
 
     } else { document.getElementById('today-meta').textContent = '아직 등록된 이미지가 없습니다.'; }
-    document.getElementById('gallery-grid').innerHTML = items.slice(0, 30).map(x => `<article class="card"><img class="thumb" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}" loading="lazy"><div class="card-info"><div class="card-day">DAY ${String(x.day_number || '').padStart(3, '0')} · ${esc(x.image_date || '')}</div><div class="card-title">${esc(x.title || 'Untitled image')}</div>${isApproved
-        ? `<div class="card-prompt">${esc((x.prompt || '').slice(0, 130))}${(x.prompt || '').length > 130 ? '...' : ''}</div>`
-        : `<div class="card-prompt">승인된 회원만 프롬프트를 볼 수 있습니다.</div>`}</div></article>`).join('');
+    document.getElementById('gallery-grid').innerHTML = items.slice(0, 30).map(x => `<article class="card">
+<img class="thumb" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}" loading="lazy" style="object-position: ${Number(x.image_position_x ?? 50)}% ${Number(x.image_position_y ?? 50)}%; transform: scale(${Number(x.image_zoom ?? 1)});">
+<div class="card-info"><div class="card-day">DAY ${String(x.day_number || '').padStart(3, '0')} · ${esc(x.image_date || '')}</div><div class="card-title">${esc(x.title || 'Untitled image')}</div>${isApproved
+            ? `<div class="card-prompt">${esc((x.prompt || '').slice(0, 130))}${(x.prompt || '').length > 130 ? '...' : ''}</div>`
+            : `<div class="card-prompt">승인된 회원만 프롬프트를 볼 수 있습니다.</div>`}</div></article>`).join('');
     document.getElementById('recent-grid').innerHTML =
         document.getElementById('gallery-grid').innerHTML
             ? items.slice(0, 3).map(x =>
                 `<article class="card">
-      <img class="thumb" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}" loading="lazy">
+      
+<img class="thumb" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}" loading="lazy" style="object-position: ${Number(x.image_position_x ?? 50)}% ${Number(x.image_position_y ?? 50)}%; transform: scale(${Number(x.image_zoom ?? 1)});">
+
       <div class="card-info">
         <div class="card-day">DAY ${String(x.day_number || '').padStart(3, '0')}</div>
         <div class="card-title">${esc(x.title || 'Untitled image')}</div>
@@ -172,35 +180,60 @@ console.log('프로필 조회 오류:', profileError);
     </article>`
             ).join('')
             : '';
-    
 
-const archiveList = document.getElementById('archive-list');
 
-if (!isApproved) {
-    archiveList.innerHTML =
-        '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
-} else {
-    const { data: memberPrompts, error: promptError } = await supabase
-        .from('member_prompts')
-        .select('image_id, prompt');
+    const archiveList = document.getElementById('archive-list');
 
-    if (promptError) {
-        console.error('프롬프트 조회 오류:', promptError);
+
+    // MEMBER PROMPTS: 승인 회원에게만 이미지 등록 버튼 표시
+    const previousUploadWrap = document.getElementById('member-upload-wrap');
+    if (previousUploadWrap) previousUploadWrap.remove();
+
+    if (isApproved) {
+        const uploadWrap = document.createElement('div');
+        uploadWrap.id = 'member-upload-wrap';
+        uploadWrap.style.cssText =
+            'display:flex;justify-content:flex-end;margin:0 0 24px;';
+
+        uploadWrap.innerHTML = `
+            <a id="member-upload-link"
+               href="./member-upload.html"
+               style="display:inline-block;padding:12px 18px;background:#171717;color:#fff;text-decoration:none;border-radius:4px;font-size:13px;font-weight:700;">
+               + 이미지 업로드
+            </a>`;
+
+        archiveList.parentElement.insertBefore(uploadWrap, archiveList);
+    }
+
+
+    if (!isApproved) {
         archiveList.innerHTML =
-            '<div class="archive-row"><span>프롬프트를 불러오지 못했습니다.</span></div>';
+            '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
     } else {
-        const promptMap = new Map(
-            (memberPrompts || []).map(p => [p.image_id, p.prompt])
-        );
+        const { data: memberPrompts, error: promptError } = await supabase
+            .from('member_prompts')
+            .select('image_id, prompt');
 
-        archiveList.innerHTML = items.slice(0, 30).map(x => `
+        if (promptError) {
+            console.error('프롬프트 조회 오류:', promptError);
+            archiveList.innerHTML =
+                '<div class="archive-row"><span>프롬프트를 불러오지 못했습니다.</span></div>';
+        } else {
+            const promptMap = new Map(
+                (memberPrompts || []).map(p => [p.image_id, p.prompt])
+            );
+
+            archiveList.innerHTML = items.slice(0, 30).map(x => `
             <article class="member-prompt-card">
-        <img
-            class="member-prompt-image"
-            src="${esc(x.image_url)}"
-            alt="${esc(x.title || 'Daily image')}"
-            loading="lazy"
-        >
+       
+<img
+    class="member-prompt-image"
+    src="${esc(x.image_url)}"
+    alt="${esc(x.title || 'Daily image')}"
+    loading="lazy"
+    style="object-position: ${Number(x.image_position_x ?? 50)}% ${Number(x.image_position_y ?? 50)}%; transform: scale(${Number(x.image_zoom ?? 1)});"
+>
+
         <div class="member-prompt-content">
             <div class="member-prompt-day">
                 DAY ${String(x.day_number || '').padStart(3, '0')}
@@ -211,9 +244,9 @@ if (!isApproved) {
         </div>
     </article>
         `).join('') ||
-        '<div class="archive-row"><span>등록된 이미지가 아직 없습니다.</span></div>';
+                '<div class="archive-row"><span>등록된 이미지가 아직 없습니다.</span></div>';
+        }
     }
-}
 
 
 }
@@ -255,15 +288,15 @@ loginButton.addEventListener('click', async (event) => {
     const { data: { session } } = await supabase.auth.getSession();
 
     if (session) {
-    await supabase.auth.signOut();
-    await updateLoginButton();
+        await supabase.auth.signOut();
+        await updateLoginButton();
 
-    // 로그아웃 후 회원 전용 프롬프트 숨기기
-    document.getElementById('archive-list').innerHTML =
-        '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
+        // 로그아웃 후 회원 전용 프롬프트 숨기기
+        document.getElementById('archive-list').innerHTML =
+            '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
 
-    alert('로그아웃되었습니다.');
-} else {
+        alert('로그아웃되었습니다.');
+    } else {
         loginSection.classList.add('is-open');
         await updateLoginButton();
     }
@@ -307,9 +340,9 @@ authForm.addEventListener('submit', async (event) => {
         authStatus.textContent = '로그인에 실패했어요. 이메일과 비밀번호를 확인해 주세요.';
     } else {
         authStatus.textContent = '로그인 성공!';
-loginSection.classList.remove('is-open');
-await updateLoginButton();
-await start();
+        loginSection.classList.remove('is-open');
+        await updateLoginButton();
+        await start();
     }
 });
 
