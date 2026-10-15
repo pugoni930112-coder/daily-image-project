@@ -890,10 +890,18 @@ main > .hero {
   color: #6b4935;
 }
 
+
 .about-story,
 .about-creations {
-  padding: 72px 9%;
+    padding: 80px 9%;
 }
+
+.about-story p,
+.about-creations > p {
+    font-size: 16px;
+    line-height: 2.1;
+}
+
 
 .about-story h2,
 .about-creations h2,
@@ -939,10 +947,12 @@ main > .hero {
 }
 
 .about-ending {
-  padding: 80px 24px;
-  text-align: center;
-  background: #332820;
-  color: #f8eee2;
+    padding: 96px 9%;
+    text-align: left;
+    background: #332820;
+    color: #f8eee2;
+    position: relative;
+    overflow: hidden;
 }
 
 .about-ending p {
@@ -950,12 +960,26 @@ main > .hero {
 }
 
 .about-ending h2 {
-  margin: 20px 0 28px;
+    max-width: 720px;
+    margin: 24px 0 32px;
+    font-size: clamp(32px, 5vw, 58px);
+    line-height: 1.25;
+    letter-spacing: -1.5px;
+}
+.about-ending .button {
+    display: inline-block;
+    padding: 14px 20px;
+    border: 1px solid rgba(248, 238, 226, 0.7);
+    color: #f8eee2;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 1px;
+    transition: background 0.25s ease, color 0.25s ease;
 }
 
-.about-ending .button {
-  display: inline-block;
-  text-decoration: none;
+.about-ending .button:hover {
+    background: #f8eee2;
+    color: #332820;
 }
 
 @media (max-width: 700px) {
@@ -1128,13 +1152,13 @@ main > .hero {
   }
 
   .about-ending {
-    padding: 70px 7%;
-  }
+    padding: 64px 7%;
+}
 
-  .about-ending h2 {
+.about-ending h2 {
     font-size: clamp(30px, 8vw, 42px);
     letter-spacing: -1px;
-  }
+}
 }
 
 
@@ -1148,4 +1172,45 @@ main > .hero {
     color: rgba(117, 76, 51, 0.10);
     z-index: 0;
   }
+}
+
+/* ABOUT - MY CREATIONS 오른쪽 설명 */
+.about-image-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.about-image-text-content {
+    margin: 24px 0;
+}
+
+.about-image-description {
+    margin-top: 18px;
+    color: #75543f;
+    font-size: 14px;
+    line-height: 2;
+    word-break: keep-all;
+}
+
+@media (max-width: 700px) {
+    .about-image-text-content {
+        margin: 20px 0;
+    }
+
+    .about-image-description {
+        font-size: 13px;
+    }
+}
+
+/* ABOUT 페이지에 온글잎 박다현체 적용 */
+#about-content,
+#about-content h1,
+#about-content h2,
+#about-content h3,
+#about-content p,
+#about-content span,
+#about-content a,
+#about-content .button {
+    font-family: 'OngleipParkDahyeon', sans-serif;
 }
