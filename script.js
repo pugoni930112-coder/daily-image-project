@@ -57,7 +57,6 @@ document.addEventListener('keydown', (event) => {
 
 function updateActiveMenu() {
     const currentPage = window.location.hash || '#today';
-    window.scrollTo({ top: 0, behavior: 'auto' });
 
     // 메뉴 밑줄 업데이트
     document.querySelectorAll('nav a:not(#login-button)').forEach(link => {
