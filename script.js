@@ -68,15 +68,16 @@ function updateActiveMenu() {
     });
 
     const hero = document.querySelector('main > .hero');
-    const today = document.getElementById('today');
-    const recent = document.getElementById('recent');
-    const gallery = document.getElementById('gallery');
-    const archive = document.getElementById('archive');
+const today = document.getElementById('today');
+const recent = document.getElementById('recent');
+const gallery = document.getElementById('gallery');
+const archive = document.getElementById('archive');
+const about = document.getElementById('about-content');
 
     // 화면 전환 대상만 숨김 처리
-    [hero, today, recent, gallery, archive].forEach(section => {
-        if (section) section.style.display = 'none';
-    });
+   [hero, today, recent, gallery, archive, about].forEach(section => {
+    if (section) section.style.display = 'none';
+});
 
     if (currentPage === '#today') {
         if (hero) hero.style.display = 'block';
@@ -86,9 +87,9 @@ function updateActiveMenu() {
         if (gallery) gallery.style.display = 'block';
     } else if (currentPage === '#member-prompts') {
         if (archive) archive.style.display = 'block';
-    } else if (currentPage === '#about') {
-        // ABOUT 화면은 별도 콘텐츠를 만들 때 연결
-    }
+   } else if (currentPage === '#about') {
+    if (about) about.style.display = 'block';
+}
 }
 
 window.addEventListener('hashchange', updateActiveMenu);
