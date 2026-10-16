@@ -207,7 +207,7 @@ h1 {
     line-height: 1.7;
     color: #5e5a54;
     margin-top: 18px;
-    white-space: pre-wrap
+    white-space: normal;
 }
 
 .tags {
@@ -694,7 +694,7 @@ main > .hero {
     color: #e0dedb;
     font-size: 13px;
     line-height: 1.9;
-    white-space: pre-wrap;
+    white-space: normal;
     overflow-wrap: anywhere;
 }
 
