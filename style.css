@@ -1298,3 +1298,32 @@ main > .hero {
 .member-prompt-text[hidden] {
     display: none;
 }
+
+
+/* ABOUT 제목 옆 작은 움직이는 캐릭터 */
+.about-heading-with-character {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+}
+
+.about-heading-with-character h2 {
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.about-loop-character {
+    margin-left: 30px;
+    display: block;
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    background: transparent;
+    opacity: 1;
+    mix-blend-mode: normal;
+    filter: none;
+    flex-shrink: 0;
+    transform: scale(2);
+    transform-origin: center;
+}
