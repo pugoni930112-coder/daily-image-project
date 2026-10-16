@@ -67,16 +67,16 @@ function updateActiveMenu() {
     });
 
     const hero = document.querySelector('main > .hero');
-const today = document.getElementById('today');
-const recent = document.getElementById('recent');
-const gallery = document.getElementById('gallery');
-const archive = document.getElementById('archive');
-const about = document.getElementById('about-content');
+    const today = document.getElementById('today');
+    const recent = document.getElementById('recent');
+    const gallery = document.getElementById('gallery');
+    const archive = document.getElementById('archive');
+    const about = document.getElementById('about-content');
 
     // 화면 전환 대상만 숨김 처리
-   [hero, today, recent, gallery, archive, about].forEach(section => {
-    if (section) section.style.display = 'none';
-});
+    [hero, today, recent, gallery, archive, about].forEach(section => {
+        if (section) section.style.display = 'none';
+    });
 
     if (currentPage === '#today') {
         if (hero) hero.style.display = 'block';
@@ -86,9 +86,9 @@ const about = document.getElementById('about-content');
         if (gallery) gallery.style.display = 'block';
     } else if (currentPage === '#member-prompts') {
         if (archive) archive.style.display = 'block';
-   } else if (currentPage === '#about') {
-    if (about) about.style.display = 'block';
-}
+    } else if (currentPage === '#about') {
+        if (about) about.style.display = 'block';
+    }
 }
 
 window.addEventListener('hashchange', updateActiveMenu);
@@ -164,14 +164,19 @@ async function start() {
 
         featured.innerHTML = `
 <img class="main-image" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}" style="object-position: ${Number(x.image_position_x ?? 50)}% ${Number(x.image_position_y ?? 50)}%; transform: scale(${Number(x.image_zoom ?? 1)});">
-<div class="prompt"><div class="day">DAY ${String(x.day_number || '').padStart(3, '0')} / 365</div><h2>${esc(x.title || 'Untitled image')}</h2>${isApproved ? `<blockquote>${esc(x.prompt || '')}</blockquote>` : '<p class="prompt-locked">프롬프트는 승인된 회원만 볼 수 있습니다.</p>'}${x.description ? `<div class="description">${esc(x.description)}</div>` : ''}<div class="tags">${tagsHtml(x.tags)}</div><a class="button" href="#gallery">VIEW ARCHIVE →</a></div>`;
+<div class="prompt"><div class="day">DAY ${String(x.day_number || '').padStart(3, '0')} / 365</div><h2>${esc(x.title || 'Untitled image')}</h2>
+${isApproved ? `
+    <button type="button" class="today-show-prompt-btn">프롬프트 보기</button>
+    <blockquote class="today-prompt-text" hidden>${esc(x.prompt || '')}</blockquote>
+` : '<p class="prompt-locked">프롬프트는 승인된 회원만 볼 수 있습니다.</p>'}
+${x.description ? `<div class="description">${esc(x.description)}</div>` : ''}<div class="tags">${tagsHtml(x.tags)}</div><a class="button" href="#gallery">VIEW ARCHIVE →</a></div>`;
 
     } else { document.getElementById('today-meta').textContent = '아직 등록된 이미지가 없습니다.'; }
     document.getElementById('gallery-grid').innerHTML = items.slice(0, 30).map(x => `<article class="card">
 <img class="thumb" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}" loading="lazy" style="object-position: ${Number(x.image_position_x ?? 50)}% ${Number(x.image_position_y ?? 50)}%; transform: scale(${Number(x.image_zoom ?? 1)});">
-<div class="card-info"><div class="card-day">DAY ${String(x.day_number || '').padStart(3, '0')} · ${esc(x.image_date || '')}</div><div class="card-title">${esc(x.title || 'Untitled image')}</div>${isApproved
-            ? `<div class="card-prompt">${esc((x.prompt || '').slice(0, 130))}${(x.prompt || '').length > 130 ? '...' : ''}</div>`
-            : `<div class="card-prompt">승인된 회원만 프롬프트를 볼 수 있습니다.</div>`}</div></article>`).join('');
+<div class="card-info"><div class="card-day">DAY ${String(x.day_number || '').padStart(3, '0')} · ${esc(x.image_date || '')}</div>
+<div class="card-title">${esc(x.title || 'Untitled image')}</div></div></article>
+`).join('');
     document.getElementById('recent-grid').innerHTML =
         document.getElementById('gallery-grid').innerHTML
             ? items.slice(0, 3).map(x =>
@@ -199,15 +204,63 @@ async function start() {
         console.log('업로드 버튼 생성 조건:', isApproved);
         const uploadWrap = document.createElement('div');
         uploadWrap.id = 'member-upload-wrap';
-        uploadWrap.style.cssText =
-            'display:flex;justify-content:flex-end;margin:0 0 24px;';
+        
 
-        uploadWrap.innerHTML = `
-            <a id="member-upload-link"
-               href="./member-upload.html"
-               style="display:inline-block;padding:12px 18px;background:#171717;color:#fff;text-decoration:none;border-radius:4px;font-size:13px;font-weight:700;">
-               + 이미지 업로드
-            </a>`;
+uploadWrap.style.cssText = `
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0 0 32px;
+    padding: 24px;
+    background: #171717;
+    border: 1px solid #514336;
+    border-radius: 4px;
+`;
+
+
+
+uploadWrap.innerHTML = `
+    <div style="
+        font-family: 'OngleipParkDahyeon', sans-serif;
+        font-size: 22px;
+        color: #ffffff;
+        line-height: 1.5;
+    ">
+        당신의 이미지도 보여주세요 ✨
+    </div>
+
+   
+<p style="
+    margin: 0;
+    font-family: 'OngleipParkDahyeon', sans-serif;
+    font-size: 13px;
+    color: #ffffff;
+    line-height: 1.7;
+">
+
+        나만의 이미지를 공유하고, 오늘의 기록을 남겨보세요.
+    </p>
+
+    <a id="member-upload-link"
+       href="./member-upload.html"
+       style="
+           display: inline-block;
+           padding: 12px 20px;
+           background: #a58a70;
+           color: #ffffff;
+           text-decoration: none;
+           border: 1px solid #a58a70;
+           border-radius: 4px;
+           font-family: 'OngleipParkDahyeon', sans-serif;
+           font-size: 14px;
+           transition: background 0.2s ease;
+       ">
+       내 이미지 공유하기 →
+    </a>
+`;
+
+
 
         archiveList.parentElement.insertBefore(uploadWrap, archiveList);
     }
@@ -233,7 +286,13 @@ async function start() {
                     · ${esc(x.image_date || '')}
                 </div>
                 <h3>${esc(x.title || 'Untitled image')}</h3>
-                <p>${esc(x.prompt || '등록된 프롬프트가 없습니다.')}</p>
+                
+<div class="member-prompt-actions">
+    <button type="button" class="show-prompt-btn">프롬프트 보기</button>
+    <button type="button" class="copy-prompt-btn">텍스트 복사</button>
+</div>
+<p class="member-prompt-text" hidden>${esc(x.prompt || '등록된 프롬프트가 없습니다.')}</p>
+
             </div>
         </article>
     `).join('') ||
@@ -243,6 +302,67 @@ async function start() {
 
 
 }
+
+
+/* MEMBER PROMPTS: 프롬프트 펼치기 및 복사 */
+document.addEventListener('click', async (event) => {
+    const showButton = event.target.closest('.show-prompt-btn');
+
+    if (showButton) {
+        const card = showButton.closest('.member-prompt-card');
+        const prompt = card?.querySelector('.member-prompt-text');
+
+        if (!prompt) return;
+
+        prompt.hidden = !prompt.hidden;
+        showButton.textContent = prompt.hidden
+            ? '프롬프트 보기'
+            : '프롬프트 숨기기';
+
+        return;
+    }
+
+    const copyButton = event.target.closest('.copy-prompt-btn');
+
+    if (copyButton) {
+        const card = copyButton.closest('.member-prompt-card');
+        const prompt = card?.querySelector('.member-prompt-text');
+        const text = prompt?.textContent.trim();
+
+        if (!text) {
+            alert('복사할 프롬프트가 없습니다.');
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(text);
+
+            const originalText = copyButton.textContent;
+            copyButton.textContent = '복사 완료!';
+
+            setTimeout(() => {
+                copyButton.textContent = originalText;
+            }, 1500);
+        } catch (error) {
+            alert('자동 복사에 실패했어요. HTTPS 연결인지 확인해 주세요.');
+        }
+    }
+  
+    const todayButton = event.target.closest('.today-show-prompt-btn');
+
+    if (todayButton) {
+        const prompt = document.querySelector('#featured .today-prompt-text');
+
+        if (!prompt) return;
+
+        prompt.hidden = !prompt.hidden;
+        todayButton.textContent = prompt.hidden
+            ? '프롬프트 보기'
+            : '프롬프트 숨기기';
+    }
+  
+});
+
 
 const loginSection = document.getElementById('login');
 const loginButton = document.getElementById('login-button');

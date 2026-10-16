@@ -160,14 +160,16 @@ h1 {
     border: 1px solid var(--line)
 }
 
+
 .main-image {
     width: 100%;
-    height: 100%;
-    min-height: 620px;
-    object-fit: cover;
+    height: auto;
+    min-height: 0;
+    object-fit: contain;
     display: block;
-    background: #e6ddd0
+    background: #e6d6d0;
 }
+
 
 .prompt {
     padding: 48px;
@@ -1213,4 +1215,86 @@ main > .hero {
 #about-content a,
 #about-content .button {
     font-family: 'OngleipParkDahyeon', sans-serif;
+}
+
+
+
+/* MEMBER PROMPTS 버튼 디자인 */
+.member-prompt-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0 12px;
+}
+
+.member-prompt-actions button {
+    padding: 8px 14px;
+    border: 1px solid #806b59;
+    border-radius: 4px;
+    background: transparent;
+    color: #d8c3ad;
+    font-family: 'OngleipParkDahyeon', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.member-prompt-actions button:hover {
+    background: #806b59;
+    color: #fff;
+}
+
+.member-prompt-text {
+    margin-top: 10px;
+    line-height: 1.8;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.member-prompt-text[hidden] {
+    display: none;
+}
+
+
+/* TODAY와 MEMBER PROMPTS 버튼 공통 디자인 */
+.today-show-prompt-btn,
+.member-prompt-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    min-height: 34px;
+    padding: 8px 14px;
+    border: 1px solid #806b59;
+    border-radius: 4px;
+    background: transparent;
+    color: #d8c3ad;
+    font-family: 'OngleipParkDahyeon', sans-serif;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.today-show-prompt-btn:hover,
+.member-prompt-actions button:hover {
+    background: #806b59;
+    color: #fff;
+}
+
+.today-show-prompt-btn {
+    margin: 12px 0;
+}
+
+.member-prompt-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0 12px;
+}
+
+.today-prompt-text[hidden],
+.member-prompt-text[hidden] {
+    display: none;
 }
