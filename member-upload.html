@@ -253,8 +253,12 @@
             <div id="member-status" class="muted"></div>
             <form id="image-form" class="hidden">
                 <div class="grid" style="margin-top:18px">
-                    <div class="field"><label for="day-number">DAY 번호 *</label><input id="day-number" type="number"
-                            min="1" step="1" required placeholder="1"></div>
+                    
+<div class="field">
+    <label>DAY 번호</label>
+    <p class="muted">DAY 번호는 이미지 등록 시 자동으로 부여됩니다.</p>
+</div>
+
                     <div class="field"><label for="image-date">이미지 날짜 *</label><input id="image-date" type="date"
                             required></div>
                     <div class="field full"><label for="title">제목 *</label><input id="title" type="text" required
@@ -470,7 +474,6 @@
                 const payload = {
                     title: $('title').value.trim(),
                     image_date: $('image-date').value,
-                    day_number: Number($('day-number').value),
                     prompt: $('prompt').value.trim(),
                     image_url: publicData.publicUrl,
                     tags: $('tags').value.split(',').map(x => x.trim()).filter(Boolean).join(', '),

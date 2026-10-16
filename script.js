@@ -147,7 +147,9 @@ async function start() {
 
         .select('id,title,image_date,day_number,image_url,tags,description,image_position_x,image_position_y,image_zoom,prompt')
 
-        .order('image_date', { ascending: false }).order('day_number', { ascending: false });
+        
+.order('day_number', { ascending: false });
+
     if (error) { statusEl.textContent = '이미지를 불러오지 못했습니다. Supabase Data API와 읽기 정책을 확인해 주세요.'; console.error(error); return; }
     const items = data || []; console.log('이미지 조회 결과:', items);
     console.log('각 이미지 프롬프트:', items.map(x => ({
