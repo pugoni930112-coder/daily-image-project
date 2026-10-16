@@ -227,7 +227,7 @@ uploadWrap.innerHTML = `
         color: #ffffff;
         line-height: 1.5;
     ">
-        당신의 이미지도 보여주세요 ✨
+        당신의 이미지를 보여주세요 ✨
     </div>
 
    
