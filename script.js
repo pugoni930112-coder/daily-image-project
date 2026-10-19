@@ -162,6 +162,7 @@ if (session?.user?.id) {
         .maybeSingle();
 
     currentUserIsAdmin = !adminError && adminProfile?.is_admin === true;
+    console.log('관리자 여부:', currentUserIsAdmin, adminProfile, adminError);
 } console.log('이미지 조회 결과:', items);
     console.log('각 이미지 프롬프트:', items.map(x => ({
         title: x.title,
