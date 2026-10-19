@@ -151,7 +151,18 @@ async function start() {
 .order('day_number', { ascending: false });
 
     if (error) { statusEl.textContent = '이미지를 불러오지 못했습니다. Supabase Data API와 읽기 정책을 확인해 주세요.'; console.error(error); return; }
-    const items = data || []; const currentUserId = session?.user?.id || null; console.log('이미지 조회 결과:', items);
+    const items = data || []; const currentUserId = session?.user?.id || null;
+    let currentUserIsAdmin = false;
+
+if (session?.user?.id) {
+    const { data: adminProfile, error: adminError } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', session.user.id)
+        .maybeSingle();
+
+    currentUserIsAdmin = !adminError && adminProfile?.is_admin === true;
+} console.log('이미지 조회 결과:', items);
     console.log('각 이미지 프롬프트:', items.map(x => ({
         title: x.title,
         prompt: x.prompt
@@ -292,7 +303,9 @@ uploadWrap.innerHTML = `
 <div class="member-prompt-actions">
     <button type="button" class="show-prompt-btn">프롬프트 보기</button>
     <button type="button" class="copy-prompt-btn">텍스트 복사</button>
-    ${x.user_id && x.user_id === currentUserId ? `<button type="button" class="edit-daily-image-btn" data-id="${esc(x.id)}">수정하기</button>` : ''}
+    ${currentUserIsAdmin || (x.user_id && x.user_id === currentUserId)
+    ? `<button type="button" class="edit-daily-image-btn" data-id="${esc(x.id)}">수정하기</button>`
+    : ''}
 </div>
 <p class="member-prompt-text" hidden>${esc(x.prompt || '등록된 프롬프트가 없습니다.')}</p>
 
