@@ -145,13 +145,13 @@ async function start() {
     const { data, error } = await supabase.from('public_daily_images')
 
 
-        .select('id,title,image_date,day_number,image_url,tags,description,image_position_x,image_position_y,image_zoom,prompt')
+        .select('id,user_id,title,image_date,day_number,image_url,tags,description,image_position_x,image_position_y,image_zoom,prompt')
 
         
 .order('day_number', { ascending: false });
 
     if (error) { statusEl.textContent = '이미지를 불러오지 못했습니다. Supabase Data API와 읽기 정책을 확인해 주세요.'; console.error(error); return; }
-    const items = data || []; console.log('이미지 조회 결과:', items);
+    const items = data || []; const currentUserId = session?.user?.id || null; console.log('이미지 조회 결과:', items);
     console.log('각 이미지 프롬프트:', items.map(x => ({
         title: x.title,
         prompt: x.prompt
@@ -292,6 +292,7 @@ uploadWrap.innerHTML = `
 <div class="member-prompt-actions">
     <button type="button" class="show-prompt-btn">프롬프트 보기</button>
     <button type="button" class="copy-prompt-btn">텍스트 복사</button>
+    ${x.user_id && x.user_id === currentUserId ? `<button type="button" class="edit-daily-image-btn" data-id="${esc(x.id)}">수정하기</button>` : ''}
 </div>
 <p class="member-prompt-text" hidden>${esc(x.prompt || '등록된 프롬프트가 없습니다.')}</p>
 
@@ -305,6 +306,63 @@ uploadWrap.innerHTML = `
 
 }
 
+
+/* 본인 게시물 수정: RLS 정책이 허용하는 경우에만 저장됩니다. */
+document.addEventListener('click', async (event) => {
+    const editButton = event.target.closest('.edit-daily-image-btn');
+    if (!editButton) return;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id) {
+        alert('로그인 후 수정할 수 있습니다.');
+        return;
+    }
+
+    const id = editButton.dataset.id;
+    const { data: item, error: readError } = await supabase
+        .from('daily_images')
+        .select('id,user_id,title,image_date,prompt,description,tags')
+        .eq('id', id)
+        .eq('user_id', session.user.id)
+        .maybeSingle();
+
+    if (readError || !item) {
+        alert('본인이 등록한 게시물을 찾을 수 없거나 수정 권한이 없습니다.');
+        return;
+    }
+
+    const title = prompt('제목을 수정하세요:', item.title || '');
+    if (title === null) return;
+    const imageDate = prompt('날짜를 수정하세요 (YYYY-MM-DD):', item.image_date || '');
+    if (imageDate === null) return;
+    const imagePrompt = prompt('프롬프트를 수정하세요:', item.prompt || '');
+    if (imagePrompt === null) return;
+    const description = prompt('설명을 수정하세요:', item.description || '');
+    if (description === null) return;
+    const tags = prompt('태그를 쉼표(,)로 구분해 입력하세요:', item.tags || '');
+    if (tags === null) return;
+
+    const { error: updateError } = await supabase
+        .from('daily_images')
+        .update({
+            title: title.trim(),
+            image_date: imageDate.trim(),
+            prompt: imagePrompt.trim(),
+            description: description.trim() || null,
+            tags: tags.trim()
+        })
+        .eq('id', id)
+        .eq('user_id', session.user.id);
+
+    if (updateError) {
+        console.error('게시물 수정 오류:', updateError);
+        alert('저장하지 못했어요. Supabase RLS 수정 정책을 확인해 주세요.');
+        return;
+    }
+
+    alert('게시물을 수정했어요.');
+    await start();
+});
 
 /* MEMBER PROMPTS: 프롬프트 펼치기 및 복사 */
 document.addEventListener('click', async (event) => {
