@@ -337,7 +337,6 @@ document.addEventListener('click', async (event) => {
         .from('daily_images')
         .select('id,user_id,title,image_date,prompt,description,tags')
         .eq('id', id)
-        .eq('user_id', session.user.id)
         .maybeSingle();
 
     if (readError || !item) {
