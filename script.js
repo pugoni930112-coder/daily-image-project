@@ -22,73 +22,73 @@ const lightboxImage = lightbox.querySelector('img');
 const lightboxClose = lightbox.querySelector('.lightbox-close');
 
 function closeLightbox() {
-    lightbox.classList.remove('is-open');
-    lightboxImage.src = '';
+  lightbox.classList.remove('is-open');
+  lightboxImage.src = '';
 }
 
 
 document.addEventListener('pointerup', (event) => {
-    const image = event.target.closest?.(
-        'img.main-image, img.thumb, img.member-prompt-image'
-    );
+  const image = event.target.closest?.(
+    'img.main-image, img.thumb, img.member-prompt-image'
+  );
 
-    if (image) {
-        lightboxImage.src = image.currentSrc || image.src;
-        lightboxImage.alt = image.alt || '전체 이미지 보기';
-        lightbox.classList.add('is-open');
-        return;
-    }
+  if (image) {
+    lightboxImage.src = image.currentSrc || image.src;
+    lightboxImage.alt = image.alt || '전체 이미지 보기';
+    lightbox.classList.add('is-open');
+    return;
+  }
 
-    if (
-        event.target === lightbox ||
-        event.target === lightboxClose
-    ) {
-        closeLightbox();
-    }
+  if (
+    event.target === lightbox ||
+    event.target === lightboxClose
+  ) {
+    closeLightbox();
+  }
 });
 
 
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        closeLightbox();
-    }
+  if (event.key === 'Escape') {
+    closeLightbox();
+  }
 });
 
 
 function updateActiveMenu() {
-    const currentPage = window.location.hash || '#today';
+  const currentPage = window.location.hash || '#today';
 
-    // 메뉴 밑줄 업데이트
-    document.querySelectorAll('nav a:not(#login-button)').forEach(link => {
-        link.classList.toggle(
-            'active',
-            link.getAttribute('href') === currentPage
-        );
-    });
+  // 메뉴 밑줄 업데이트
+  document.querySelectorAll('nav a:not(#login-button)').forEach(link => {
+    link.classList.toggle(
+      'active',
+      link.getAttribute('href') === currentPage
+    );
+  });
 
-    const hero = document.querySelector('main > .hero');
-    const today = document.getElementById('today');
-    const recent = document.getElementById('recent');
-    const gallery = document.getElementById('gallery');
-    const archive = document.getElementById('archive');
-    const about = document.getElementById('about-content');
+  const hero = document.querySelector('main > .hero');
+  const today = document.getElementById('today');
+  const recent = document.getElementById('recent');
+  const gallery = document.getElementById('gallery');
+  const archive = document.getElementById('archive');
+  const about = document.getElementById('about-content');
 
-    // 화면 전환 대상만 숨김 처리
-    [hero, today, recent, gallery, archive, about].forEach(section => {
-        if (section) section.style.display = 'none';
-    });
+  // 화면 전환 대상만 숨김 처리
+  [hero, today, recent, gallery, archive, about].forEach(section => {
+    if (section) section.style.display = 'none';
+  });
 
-    if (currentPage === '#today') {
-        if (hero) hero.style.display = 'block';
-        if (today) today.style.display = 'block';
-        if (recent) recent.style.display = 'block';
-    } else if (currentPage === '#gallery') {
-        if (gallery) gallery.style.display = 'block';
-    } else if (currentPage === '#member-prompts') {
-        if (archive) archive.style.display = 'block';
-    } else if (currentPage === '#about') {
-        if (about) about.style.display = 'block';
-    }
+  if (currentPage === '#today') {
+    if (hero) hero.style.display = 'block';
+    if (today) today.style.display = 'block';
+    if (recent) recent.style.display = 'block';
+  } else if (currentPage === '#gallery') {
+    if (gallery) gallery.style.display = 'block';
+  } else if (currentPage === '#member-prompts') {
+    if (archive) archive.style.display = 'block';
+  } else if (currentPage === '#about') {
+    if (about) about.style.display = 'block';
+  }
 }
 
 window.addEventListener('hashchange', updateActiveMenu);
@@ -96,87 +96,87 @@ updateActiveMenu();
 
 
 document.querySelector('nav a[href="#today"]')?.addEventListener('click', (event) => {
-    event.preventDefault();
+  event.preventDefault();
 
-    history.replaceState(null, '', '#today');
-    updateActiveMenu();
+  history.replaceState(null, '', '#today');
+  updateActiveMenu();
 
-    window.scrollTo({ top: 0, behavior: 'auto' });
+  window.scrollTo({ top: 0, behavior: 'auto' });
 
-    requestAnimationFrame(() => {
-        const title = document.querySelector('#today .section-head');
-        if (title) {
-            const top = title.getBoundingClientRect().top + window.scrollY - 90;
-            window.scrollTo({ top, behavior: 'auto' });
-        }
-    });
+  requestAnimationFrame(() => {
+    const title = document.querySelector('#today .section-head');
+    if (title) {
+      const top = title.getBoundingClientRect().top + window.scrollY - 90;
+      window.scrollTo({ top, behavior: 'auto' });
+    }
+  });
 });
 
 
 
 document.querySelector('.logo')?.addEventListener('click', (event) => {
-    event.preventDefault();
-    history.replaceState(null, '', '#today');
-    updateActiveMenu();
-    window.scrollTo({ top: 0, behavior: 'auto' });
+  event.preventDefault();
+  history.replaceState(null, '', '#today');
+  updateActiveMenu();
+  window.scrollTo({ top: 0, behavior: 'auto' });
 });
 
 
 async function start() {
-    const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabase.auth.getSession();
 
-    let isApproved = false;
+  let isApproved = false;
 
-    if (session) {
-        const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('approved')
-            .eq('id', session.user.id)
-            .maybeSingle();
+  if (session) {
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('approved')
+      .eq('id', session.user.id)
+      .maybeSingle();
 
-        console.log('프로필 조회 결과:', profile);
-        console.log('프로필 조회 오류:', profileError);
+    console.log('프로필 조회 결과:', profile);
+    console.log('프로필 조회 오류:', profileError);
 
-        if (!profileError && profile) {
-            isApproved = profile.approved === true;
-        }
+    if (!profileError && profile) {
+      isApproved = profile.approved === true;
     }
-    if (!SUPABASE_URL.startsWith('https://') || SUPABASE_PUBLISHABLE_KEY.startsWith('PASTE_')) { statusEl.textContent = '설정이 필요합니다: config.js에 Supabase URL과 Publishable key를 입력해 주세요.'; return; }
-    const { data, error } = await supabase.from('public_daily_images')
+  }
+  if (!SUPABASE_URL.startsWith('https://') || SUPABASE_PUBLISHABLE_KEY.startsWith('PASTE_')) { statusEl.textContent = '설정이 필요합니다: config.js에 Supabase URL과 Publishable key를 입력해 주세요.'; return; }
+  const { data, error } = await supabase.from('public_daily_images')
 
 
-       .select('id,title,image_date,day_number,image_url,tags,description,image_position_x,image_position_y,image_zoom,prompt')
+    .select('id,title,image_date,day_number,image_url,tags,description,image_position_x,image_position_y,image_zoom,prompt')
 
-        
-.order('day_number', { ascending: false });
 
-    if (error) { statusEl.textContent = '이미지를 불러오지 못했습니다. Supabase Data API와 읽기 정책을 확인해 주세요.'; console.error(error); return; }
-    const items = data || []; const currentUserId = session?.user?.id || null;
-    let currentUserIsAdmin = false;
+    .order('day_number', { ascending: false });
 
-if (session?.user?.id) {
+  if (error) { statusEl.textContent = '이미지를 불러오지 못했습니다. Supabase Data API와 읽기 정책을 확인해 주세요.'; console.error(error); return; }
+  const items = data || []; const currentUserId = session?.user?.id || null;
+  let currentUserIsAdmin = false;
+
+  if (session?.user?.id) {
     const { data: adminProfile, error: adminError } = await supabase
-        .from('profiles')
-        .select('is_admin')
-        .eq('id', session.user.id)
-        .maybeSingle();
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', session.user.id)
+      .maybeSingle();
 
     currentUserIsAdmin = !adminError && adminProfile?.is_admin === true;
     console.log('관리자 여부:', currentUserIsAdmin, adminProfile, adminError);
-} console.log('이미지 조회 결과:', items);
-    console.log('각 이미지 프롬프트:', items.map(x => ({
-        title: x.title,
-        prompt: x.prompt
-    }))); statusEl.textContent = `현재 ${items.length}개의 이미지가 기록되어 있습니다.`;
-    document.getElementById('gallery-meta').textContent = `${items.length} IMAGES`;
-    document.getElementById('archive-heading').innerHTML =
-        `${items.length} ${items.length === 1 ? 'DAY' : 'DAYS'}.<br>${items.length} ${items.length === 1 ? 'PROMPT' : 'PROMPTS'}.`;
-    const featured = document.getElementById('featured');
-    if (items.length) {
-        const x = items[0];
-        document.getElementById('today-meta').textContent = `${dateLabel(x.image_date)} · DAY ${String(x.day_number || '').padStart(3, '0')}`;
+  } console.log('이미지 조회 결과:', items);
+  console.log('각 이미지 프롬프트:', items.map(x => ({
+    title: x.title,
+    prompt: x.prompt
+  }))); statusEl.textContent = `현재 ${items.length}개의 이미지가 기록되어 있습니다.`;
+  document.getElementById('gallery-meta').textContent = `${items.length} IMAGES`;
+  document.getElementById('archive-heading').innerHTML =
+    `${items.length} ${items.length === 1 ? 'DAY' : 'DAYS'}.<br>${items.length} ${items.length === 1 ? 'PROMPT' : 'PROMPTS'}.`;
+  const featured = document.getElementById('featured');
+  if (items.length) {
+    const x = items[0];
+    document.getElementById('today-meta').textContent = `${dateLabel(x.image_date)} · DAY ${String(x.day_number || '').padStart(3, '0')}`;
 
-        featured.innerHTML = `
+    featured.innerHTML = `
 <img class="main-image" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}" style="object-position: ${Number(x.image_position_x ?? 50)}% ${Number(x.image_position_y ?? 50)}%; transform: scale(${Number(x.image_zoom ?? 1)});">
 <div class="prompt"><div class="day">DAY ${String(x.day_number || '').padStart(3, '0')} / 365</div><h2>${esc(x.title || 'Untitled image')}</h2>
 ${isApproved ? `
@@ -185,16 +185,16 @@ ${isApproved ? `
 ` : '<p class="prompt-locked">프롬프트는 승인된 회원만 볼 수 있습니다.</p>'}
 ${x.description ? `<div class="description">${esc(x.description)}</div>` : ''}<div class="tags">${tagsHtml(x.tags)}</div><a class="button" href="#gallery">VIEW ARCHIVE →</a></div>`;
 
-    } else { document.getElementById('today-meta').textContent = '아직 등록된 이미지가 없습니다.'; }
-    document.getElementById('gallery-grid').innerHTML = items.slice(0, 30).map(x => `<article class="card">
+  } else { document.getElementById('today-meta').textContent = '아직 등록된 이미지가 없습니다.'; }
+  document.getElementById('gallery-grid').innerHTML = items.slice(0, 30).map(x => `<article class="card">
 <img class="thumb" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}" loading="lazy" style="object-position: ${Number(x.image_position_x ?? 50)}% ${Number(x.image_position_y ?? 50)}%; transform: scale(${Number(x.image_zoom ?? 1)});">
 <div class="card-info"><div class="card-day">DAY ${String(x.day_number || '').padStart(3, '0')} · ${esc(x.image_date || '')}</div>
 <div class="card-title">${esc(x.title || 'Untitled image')}</div></div></article>
 `).join('');
-    document.getElementById('recent-grid').innerHTML =
-        document.getElementById('gallery-grid').innerHTML
-            ? items.slice(0, 3).map(x =>
-                `<article class="card">
+  document.getElementById('recent-grid').innerHTML =
+    document.getElementById('gallery-grid').innerHTML
+      ? items.slice(0, 3).map(x =>
+        `<article class="card">
       
 <img class="thumb" src="${esc(x.image_url)}" alt="${esc(x.title || 'Daily image')}" loading="lazy" style="object-position: ${Number(x.image_position_x ?? 50)}% ${Number(x.image_position_y ?? 50)}%; transform: scale(${Number(x.image_zoom ?? 1)});">
 
@@ -203,24 +203,24 @@ ${x.description ? `<div class="description">${esc(x.description)}</div>` : ''}<d
         <div class="card-title">${esc(x.title || 'Untitled image')}</div>
       </div>
     </article>`
-            ).join('')
-            : '';
+      ).join('')
+      : '';
 
 
-    const archiveList = document.getElementById('archive-list');
+  const archiveList = document.getElementById('archive-list');
 
 
-    // MEMBER PROMPTS: 승인 회원에게만 이미지 등록 버튼 표시
-    const previousUploadWrap = document.getElementById('member-upload-wrap');
-    if (previousUploadWrap) previousUploadWrap.remove();
+  // MEMBER PROMPTS: 승인 회원에게만 이미지 등록 버튼 표시
+  const previousUploadWrap = document.getElementById('member-upload-wrap');
+  if (previousUploadWrap) previousUploadWrap.remove();
 
-    if (isApproved) {
-        console.log('업로드 버튼 생성 조건:', isApproved);
-        const uploadWrap = document.createElement('div');
-        uploadWrap.id = 'member-upload-wrap';
-        
+  if (isApproved) {
+    console.log('업로드 버튼 생성 조건:', isApproved);
+    const uploadWrap = document.createElement('div');
+    uploadWrap.id = 'member-upload-wrap';
 
-uploadWrap.style.cssText = `
+
+    uploadWrap.style.cssText = `
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -234,7 +234,7 @@ uploadWrap.style.cssText = `
 
 
 
-uploadWrap.innerHTML = `
+    uploadWrap.innerHTML = `
     <div style="
         font-family: 'OngleipParkDahyeon', sans-serif;
         font-size: 22px;
@@ -276,16 +276,16 @@ uploadWrap.innerHTML = `
 
 
 
-        archiveList.parentElement.insertBefore(uploadWrap, archiveList);
-    }
+    archiveList.parentElement.insertBefore(uploadWrap, archiveList);
+  }
 
 
 
-    if (!isApproved) {
-        archiveList.innerHTML =
-            '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
-    } else {
-        archiveList.innerHTML = items.slice(0, 30).map(x => `
+  if (!isApproved) {
+    archiveList.innerHTML =
+      '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
+  } else {
+    archiveList.innerHTML = items.slice(0, 30).map(x => `
         <article class="member-prompt-card">
             <img
                 class="member-prompt-image"
@@ -305,16 +305,19 @@ uploadWrap.innerHTML = `
     <button type="button" class="show-prompt-btn">프롬프트 보기</button>
     <button type="button" class="copy-prompt-btn">텍스트 복사</button>
     ${currentUserIsAdmin || (x.user_id && x.user_id === currentUserId)
-    ? `<button type="button" class="edit-daily-image-btn" data-id="${esc(x.id)}">수정하기</button>`
-    : ''}
+       ? `
+    <button type="button" class="edit-daily-image-btn" data-id="${esc(x.id)}">수정하기</button>
+    <button type="button" class="delete-daily-image-btn" data-id="${esc(x.id)}">삭제하기</button>
+  `
+: ''}
 </div>
 <p class="member-prompt-text" hidden>${esc(x.prompt || '등록된 프롬프트가 없습니다.')}</p>
 
             </div>
         </article>
     `).join('') ||
-            '<div class="archive-row"><span>등록된 이미지가 아직 없습니다.</span></div>';
-    }
+      '<div class="archive-row"><span>등록된 이미지가 아직 없습니다.</span></div>';
+  }
 
 
 
@@ -323,75 +326,134 @@ uploadWrap.innerHTML = `
 
 /* 수정하기 버튼: 이미지 등록 화면으로 이동 */
 document.addEventListener('click', (event) => {
-    const editButton = event.target.closest('.edit-daily-image-btn');
-    if (!editButton) return;
+  const editButton = event.target.closest('.edit-daily-image-btn');
+  if (!editButton) return;
 
-    const id = editButton.dataset.id;
+  const id = editButton.dataset.id;
+  if (!id) {
+    alert('수정할 게시물 번호를 찾지 못했습니다.');
+    return;
+  }
+
+  window.location.href = `./member-upload.html?edit=${encodeURIComponent(id)}`;
+});
+
+// 삭제하기 버튼: 작성자 본인 또는 관리자만 삭제 가능
+document.addEventListener('click', async (event) => {
+    const deleteButton = event.target.closest('.delete-daily-image-btn');
+    if (!deleteButton) return;
+
+    const id = deleteButton.dataset.id;
     if (!id) {
-        alert('수정할 게시물 번호를 찾지 못했습니다.');
+        alert('삭제할 게시물 번호를 찾지 못했습니다.');
         return;
     }
 
-    window.location.href = `./member-upload.html?edit=${encodeURIComponent(id)}`;
+    const confirmed = confirm(
+        '정말 이 게시물을 삭제할까요?\n삭제한 게시물은 복구할 수 없습니다.'
+    );
+    if (!confirmed) return;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id) {
+        alert('로그인 후 삭제할 수 있습니다.');
+        return;
+    }
+
+    const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', session.user.id)
+        .maybeSingle();
+
+    if (profileError) {
+        alert('관리자 권한을 확인하지 못했습니다.');
+        return;
+    }
+
+    let query = supabase
+        .from('daily_images')
+        .delete()
+        .eq('id', id);
+
+    if (profile?.is_admin !== true) {
+        query = query.eq('user_id', session.user.id);
+    }
+
+    const { data, error } = await query.select('id');
+
+    if (error) {
+        console.error('게시물 삭제 오류:', error);
+        alert('삭제하지 못했습니다. Supabase 삭제 권한 정책을 확인해 주세요.');
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        alert('삭제 권한이 없거나 게시물을 찾을 수 없습니다.');
+        return;
+    }
+
+    alert('게시물을 삭제했습니다.');
+    await start();
 });
 
 /* MEMBER PROMPTS: 프롬프트 펼치기 및 복사 */
 document.addEventListener('click', async (event) => {
-    const showButton = event.target.closest('.show-prompt-btn');
+  const showButton = event.target.closest('.show-prompt-btn');
 
-    if (showButton) {
-        const card = showButton.closest('.member-prompt-card');
-        const prompt = card?.querySelector('.member-prompt-text');
+  if (showButton) {
+    const card = showButton.closest('.member-prompt-card');
+    const prompt = card?.querySelector('.member-prompt-text');
 
-        if (!prompt) return;
+    if (!prompt) return;
 
-        prompt.hidden = !prompt.hidden;
-        showButton.textContent = prompt.hidden
-            ? '프롬프트 보기'
-            : '프롬프트 숨기기';
+    prompt.hidden = !prompt.hidden;
+    showButton.textContent = prompt.hidden
+      ? '프롬프트 보기'
+      : '프롬프트 숨기기';
 
-        return;
+    return;
+  }
+
+  const copyButton = event.target.closest('.copy-prompt-btn');
+
+  if (copyButton) {
+    const card = copyButton.closest('.member-prompt-card');
+    const prompt = card?.querySelector('.member-prompt-text');
+    const text = prompt?.textContent.trim();
+
+    if (!text) {
+      alert('복사할 프롬프트가 없습니다.');
+      return;
     }
 
-    const copyButton = event.target.closest('.copy-prompt-btn');
+    try {
+      await navigator.clipboard.writeText(text);
 
-    if (copyButton) {
-        const card = copyButton.closest('.member-prompt-card');
-        const prompt = card?.querySelector('.member-prompt-text');
-        const text = prompt?.textContent.trim();
+      const originalText = copyButton.textContent;
+      copyButton.textContent = '복사 완료!';
 
-        if (!text) {
-            alert('복사할 프롬프트가 없습니다.');
-            return;
-        }
-
-        try {
-            await navigator.clipboard.writeText(text);
-
-            const originalText = copyButton.textContent;
-            copyButton.textContent = '복사 완료!';
-
-            setTimeout(() => {
-                copyButton.textContent = originalText;
-            }, 1500);
-        } catch (error) {
-            alert('자동 복사에 실패했어요. HTTPS 연결인지 확인해 주세요.');
-        }
+      setTimeout(() => {
+        copyButton.textContent = originalText;
+      }, 1500);
+    } catch (error) {
+      alert('자동 복사에 실패했어요. HTTPS 연결인지 확인해 주세요.');
     }
-  
-    const todayButton = event.target.closest('.today-show-prompt-btn');
+  }
 
-    if (todayButton) {
-        const prompt = document.querySelector('#featured .today-prompt-text');
+  const todayButton = event.target.closest('.today-show-prompt-btn');
 
-        if (!prompt) return;
+  if (todayButton) {
+    const prompt = document.querySelector('#featured .today-prompt-text');
 
-        prompt.hidden = !prompt.hidden;
-        todayButton.textContent = prompt.hidden
-            ? '프롬프트 보기'
-            : '프롬프트 숨기기';
-    }
-  
+    if (!prompt) return;
+
+    prompt.hidden = !prompt.hidden;
+    todayButton.textContent = prompt.hidden
+      ? '프롬프트 보기'
+      : '프롬프트 숨기기';
+  }
+
 });
 
 
@@ -399,116 +461,116 @@ const loginSection = document.getElementById('login');
 const loginButton = document.getElementById('login-button');
 
 async function updateLoginButton() {
-    const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabase.auth.getSession();
 
-    loginButton.textContent = session ? 'LOGOUT' : 'LOGIN';
-    loginButton.href = session ? '#logout' : '#login';
+  loginButton.textContent = session ? 'LOGOUT' : 'LOGIN';
+  loginButton.href = session ? '#logout' : '#login';
 
-    const adminMenu = document.getElementById('admin-menu');
+  const adminMenu = document.getElementById('admin-menu');
 
-    if (adminMenu) {
-        let isAdmin = false;
+  if (adminMenu) {
+    let isAdmin = false;
 
-        if (session) {
-            const { data: profile, error } = await supabase
-                .from('profiles')
-                .select('is_admin')
-                .eq('id', session.user.id)
-                .maybeSingle();
+    if (session) {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', session.user.id)
+        .maybeSingle();
 
-            if (!error && profile) {
-                isAdmin = profile.is_admin === true;
-            }
-        }
-
-        adminMenu.style.display = isAdmin ? '' : 'none';
+      if (!error && profile) {
+        isAdmin = profile.is_admin === true;
+      }
     }
+
+    adminMenu.style.display = isAdmin ? '' : 'none';
+  }
 }
 
 
 loginButton.addEventListener('click', async (event) => {
-    event.preventDefault();
+  event.preventDefault();
 
-    const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabase.auth.getSession();
 
-    if (session) {
-        await supabase.auth.signOut();
-        await updateLoginButton();
+  if (session) {
+    await supabase.auth.signOut();
+    await updateLoginButton();
 
-        // 로그아웃 후 회원 전용 프롬프트 숨기기
-        document.getElementById('archive-list').innerHTML =
-            '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
+    // 로그아웃 후 회원 전용 프롬프트 숨기기
+    document.getElementById('archive-list').innerHTML =
+      '<div class="archive-row"><span>로그인 후 관리자 승인을 받으면 프롬프트를 볼 수 있습니다.</span></div>';
 
-        alert('로그아웃되었습니다.');
-    } else {
-        loginSection.classList.add('is-open');
-        await updateLoginButton();
-    }
+    alert('로그아웃되었습니다.');
+  } else {
+    loginSection.classList.add('is-open');
+    await updateLoginButton();
+  }
 });
 
 loginSection.addEventListener('click', (event) => {
-    if (event.target === loginSection) {
-        loginSection.classList.remove('is-open');
-    }
+  if (event.target === loginSection) {
+    loginSection.classList.remove('is-open');
+  }
 });
 
 document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        loginSection.classList.remove('is-open');
-    }
+  if (event.key === 'Escape') {
+    loginSection.classList.remove('is-open');
+  }
 });
 const loginClose = document.getElementById('login-close');
 
 loginClose.addEventListener('click', () => {
-    loginSection.classList.remove('is-open');
+  loginSection.classList.remove('is-open');
 });
 const authForm = document.getElementById('auth-form');
 const signupButton = document.getElementById('signup-button');
 const authStatus = document.getElementById('auth-status');
 
 authForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
+  event.preventDefault();
 
-    const email = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-password').value;
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
 
-    authStatus.textContent = '로그인 중입니다...';
+  authStatus.textContent = '로그인 중입니다...';
 
-    const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-    });
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
 
 
-    if (error) {
-        authStatus.textContent = '로그인에 실패했어요. 이메일과 비밀번호를 확인해 주세요.';
-    } else {
-        authStatus.textContent = '로그인 성공!';
-        loginSection.classList.remove('is-open');
-        await updateLoginButton();
-        await start();
-    }
+  if (error) {
+    authStatus.textContent = '로그인에 실패했어요. 이메일과 비밀번호를 확인해 주세요.';
+  } else {
+    authStatus.textContent = '로그인 성공!';
+    loginSection.classList.remove('is-open');
+    await updateLoginButton();
+    await start();
+  }
 });
 
 signupButton.addEventListener('click', async () => {
-    const email = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-password').value;
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
 
-    if (!email || password.length < 6) {
-        authStatus.textContent = '이메일과 6자 이상의 비밀번호를 입력해 주세요.';
-        return;
-    }
+  if (!email || password.length < 6) {
+    authStatus.textContent = '이메일과 6자 이상의 비밀번호를 입력해 주세요.';
+    return;
+  }
 
-    authStatus.textContent = '회원가입 신청 중입니다...';
+  authStatus.textContent = '회원가입 신청 중입니다...';
 
-    const { error } = await supabase.auth.signUp({
-        email,
-        password
-    });
+  const { error } = await supabase.auth.signUp({
+    email,
+    password
+  });
 
-    authStatus.textContent = error
-        ? '가입 신청에 실패했어요. 입력 내용을 확인해 주세요.'
-        : '가입 신청이 완료됐어요. 관리자 승인 후 프롬프트를 볼 수 있습니다.';
+  authStatus.textContent = error
+    ? '가입 신청에 실패했어요. 입력 내용을 확인해 주세요.'
+    : '가입 신청이 완료됐어요. 관리자 승인 후 프롬프트를 볼 수 있습니다.';
 });
 updateLoginButton();
 start();
