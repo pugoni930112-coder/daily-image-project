@@ -1327,3 +1327,19 @@ main > .hero {
     transform: scale(2);
     transform-origin: center;
 }
+
+/* ABOUT 모바일 이미지 잘림 수정 */
+@media (max-width: 700px) {
+  .about-character {
+    overflow: visible;
+    min-height: auto;
+  }
+
+  .about-character img {
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+    height: auto;
+    object-fit: contain;
+  }
+}
