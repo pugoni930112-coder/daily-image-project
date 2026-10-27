@@ -167,7 +167,14 @@ async function start() {
   console.log('각 이미지 프롬프트:', items.map(x => ({
     title: x.title,
     prompt: x.prompt
-  }))); statusEl.textContent = `현재 ${items.length}개의 이미지가 기록되어 있습니다.`;
+  })));
+  
+ console.log('현재 로그인 사용자 ID:', currentUserId);
+console.log('첫 게시물 작성자 ID:', items[0]?.user_id);
+console.log('관리자 여부:', currentUserIsAdmin); 
+  
+  
+  statusEl.textContent = `현재 ${items.length}개의 이미지가 기록되어 있습니다.`;
   document.getElementById('gallery-meta').textContent = `${items.length} IMAGES`;
   document.getElementById('archive-heading').innerHTML =
     `${items.length} ${items.length === 1 ? 'DAY' : 'DAYS'}.<br>${items.length} ${items.length === 1 ? 'PROMPT' : 'PROMPTS'}.`;
