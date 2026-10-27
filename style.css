@@ -1352,3 +1352,13 @@ main > .hero {
     object-position: center;
   }
 }
+
+
+/* 모바일 ABOUT 캐릭터 이미지 잘림 수정 */
+@media (max-width: 768px) {
+  .about-character img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+}
