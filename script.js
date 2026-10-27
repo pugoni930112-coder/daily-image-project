@@ -321,60 +321,18 @@ uploadWrap.innerHTML = `
 }
 
 
-/* 본인 게시물 수정: RLS 정책이 허용하는 경우에만 저장됩니다. */
-document.addEventListener('click', async (event) => {
+/* 수정하기 버튼: 이미지 등록 화면으로 이동 */
+document.addEventListener('click', (event) => {
     const editButton = event.target.closest('.edit-daily-image-btn');
     if (!editButton) return;
 
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user?.id) {
-        alert('로그인 후 수정할 수 있습니다.');
-        return;
-    }
-
     const id = editButton.dataset.id;
-    const { data: item, error: readError } = await supabase
-        .from('daily_images')
-        .select('id,user_id,title,image_date,prompt,description,tags')
-        .eq('id', id)
-        .maybeSingle();
-
-    if (readError || !item) {
-        alert('본인이 등록한 게시물을 찾을 수 없거나 수정 권한이 없습니다.');
+    if (!id) {
+        alert('수정할 게시물 번호를 찾지 못했습니다.');
         return;
     }
 
-    const title = prompt('제목을 수정하세요:', item.title || '');
-    if (title === null) return;
-    const imageDate = prompt('날짜를 수정하세요 (YYYY-MM-DD):', item.image_date || '');
-    if (imageDate === null) return;
-    const imagePrompt = prompt('프롬프트를 수정하세요:', item.prompt || '');
-    if (imagePrompt === null) return;
-    const description = prompt('설명을 수정하세요:', item.description || '');
-    if (description === null) return;
-    const tags = prompt('태그를 쉼표(,)로 구분해 입력하세요:', item.tags || '');
-    if (tags === null) return;
-
-    const { error: updateError } = await supabase
-        .from('daily_images')
-        .update({
-            title: title.trim(),
-            image_date: imageDate.trim(),
-            prompt: imagePrompt.trim(),
-            description: description.trim() || null,
-            tags: tags.trim()
-        })
-        .eq('id', id)
-        .eq('user_id', session.user.id);
-
-    if (updateError) {
-        console.error('게시물 수정 오류:', updateError);
-        alert('저장하지 못했어요. Supabase RLS 수정 정책을 확인해 주세요.');
-        return;
-    }
-
-    alert('게시물을 수정했어요.');
-    await start();
+    window.location.href = `./member-upload.html?edit=${encodeURIComponent(id)}`;
 });
 
 /* MEMBER PROMPTS: 프롬프트 펼치기 및 복사 */

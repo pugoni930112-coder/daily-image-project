@@ -190,7 +190,7 @@
   </header>
   <main>
     <div>
-      <h1>이미지 등록</h1>
+      <h1 id="page-title">이미지 등록</h1>
       <div class="muted">승인된 회원은 이미지와 제작 프롬프트를 등록할 수 있습니다. 등록한 이미지는 공개 갤러리에 표시됩니다.</div>
     </div>
     <div class="notice">이미지는 전체 방문자에게 공개됩니다. 프롬프트는 승인 회원만 열람할 수 있도록 설정되어 있습니다. 등록 후에는 게시물이 바로 공개됩니다.</div>
@@ -209,7 +209,7 @@
 
     <section class="panel hidden" id="upload-panel">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-        <h2>새 이미지 등록</h2><button id="logout-button" class="secondary" type="button">로그아웃</button>
+        <h2 id="form-title">새 이미지 등록</h2><button id="logout-button" class="secondary" type="button">로그아웃</button>
       </div>
       <div id="member-status" class="muted"></div>
       <form id="image-form" class="hidden">
@@ -222,8 +222,14 @@
           <div class="field"><label for="image-date">이미지 날짜 *</label><input id="image-date" type="date" required></div>
           <div class="field full"><label for="title">제목 *</label><input id="title" type="text" required maxlength="200"
               placeholder="이미지 제목"></div>
-          <div class="field full"><label for="image-file">이미지 파일 *</label><input id="image-file" type="file"
-              accept="image/*" required></div>
+          <div class="field full">
+            <label for="image-file">이미지 파일 <span id="file-required-mark">*</span></label>
+            <input id="image-file" type="file" accept="image/*" required>
+            <div id="current-image-wrap" class="hidden">
+              <p class="muted">현재 등록된 이미지 (새 파일을 선택하면 교체됩니다)</p>
+              <img id="current-image-preview" alt="현재 등록된 이미지" style="max-width:240px;max-height:240px;object-fit:contain;border:1px solid #ddd;padding:4px">
+            </div>
+          </div>
           <div class="field full"><label for="prompt">이미지 생성 프롬프트 *</label><textarea id="prompt" required
               placeholder="이미지를 만들 때 사용한 프롬프트"></textarea></div>
           <div class="field full"><label for="description">설명 (선택)</label><textarea id="description"
@@ -231,7 +237,10 @@
           <div class="field full"><label for="tags">태그 (쉼표로 구분)</label><input id="tags" type="text"
               placeholder="chibi, concert, purple light"></div>
         </div>
-        <div class="actions"><button id="save-button" type="submit">등록하기</button></div>
+        <div class="actions">
+          <button id="save-button" type="submit">등록하기</button>
+          <button id="cancel-edit-button" class="secondary hidden" type="button">취소</button>
+        </div>
       </form>
       <div id="form-message" class="message" role="status"></div>
     </section>
@@ -245,6 +254,8 @@
     let supabase = null;
     let currentUser = null;
     let isApproved = false;
+    const editId = new URLSearchParams(window.location.search).get('edit');
+    let existingImage = null;
 
     function say(id, message) { $(id).textContent = message || ''; }
     function showLoggedOut() {
@@ -299,45 +310,115 @@
 
     $('image-form').addEventListener('submit', async e => {
       e.preventDefault();
-      if (!currentUser || !isApproved) { say('form-message', '승인된 회원만 등록할 수 있습니다.'); return; }
+      if (!currentUser || !isApproved) {
+        say('form-message', '승인된 회원만 등록하거나 수정할 수 있습니다.');
+        return;
+      }
+
       const file = $('image-file').files[0];
-      if (!file || !file.type.startsWith('image/')) { say('form-message', '이미지 파일을 선택해 주세요.'); return; }
+      if (!editId && (!file || !file.type.startsWith('image/'))) {
+        say('form-message', '이미지 파일을 선택해 주세요.');
+        return;
+      }
+      if (file && !file.type.startsWith('image/')) {
+        say('form-message', '이미지 파일만 선택할 수 있습니다.');
+        return;
+      }
 
       const btn = $('save-button');
       btn.disabled = true;
-      say('form-message', '이미지 업로드 및 저장 중…');
-      let uploadedPath = null;
-      try {
-        const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-        uploadedPath = `${currentUser.id}/${Date.now()}-${cleanName}`;
-        const { error: uploadError } = await supabase.storage.from('images').upload(uploadedPath, file, {
-          cacheControl: '3600', upsert: false
-        });
-        if (uploadError) throw uploadError;
+      say('form-message', editId ? '게시물 수정 중…' : '이미지 업로드 및 저장 중…');
 
-        const { data: publicData } = supabase.storage.from('images').getPublicUrl(uploadedPath);
+      try {
+        let imageUrl = existingImage?.image_url || null;
+        if (file) {
+          const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const uploadedPath = `${currentUser.id}/${Date.now()}-${cleanName}`;
+          const { error: uploadError } = await supabase.storage.from('images').upload(uploadedPath, file, {
+            cacheControl: '3600', upsert: false
+          });
+          if (uploadError) throw uploadError;
+          const { data: publicData } = supabase.storage.from('images').getPublicUrl(uploadedPath);
+          imageUrl = publicData.publicUrl;
+        }
+
         const payload = {
-          user_id: currentUser.id,
           title: $('title').value.trim(),
           image_date: $('image-date').value,
           day_number: Number($('day-number').value),
           prompt: $('prompt').value.trim(),
-          image_url: publicData.publicUrl,
+          image_url: imageUrl,
           tags: $('tags').value.split(',').map(x => x.trim()).filter(Boolean).join(', '),
           description: $('description').value.trim() || null
         };
-        const { error: insertError } = await supabase.from('daily_images').insert(payload);
-        if (insertError) throw insertError;
 
-        $('image-form').reset();
-        say('form-message', '등록이 완료됐어요! 이미지가 공개 갤러리에 반영됩니다. 메인 페이지 반영 여부는 사이트의 갤러리 연결 방식에 따라 확인이 필요합니다.');
+        let saveError;
+        if (editId) {
+          const { error } = await supabase.from('daily_images').update(payload).eq('id', editId);
+          saveError = error;
+        } else {
+          payload.user_id = currentUser.id;
+          const { error } = await supabase.from('daily_images').insert(payload);
+          saveError = error;
+        }
+        if (saveError) throw saveError;
+
+        if (editId) {
+          say('form-message', '수정이 완료됐어요. 회원 이미지 목록으로 돌아갑니다.');
+          window.location.href = './index.html#member-prompts';
+        } else {
+          $('image-form').reset();
+          existingImage = null;
+          await setNextDayNumber();
+          say('form-message', '등록이 완료됐어요! 이미지가 공개 갤러리에 반영됩니다.');
+        }
       } catch (err) {
-        say('form-message', '등록에 실패했습니다. 관리자에게 오류 내용을 전달해 주세요.\n' + (err?.message || String(err)));
+        console.error('이미지 저장 오류:', err);
+        say('form-message', '저장에 실패했습니다. 권한(RLS) 또는 저장소 설정을 확인해 주세요.\n' + (err?.message || String(err)));
       } finally {
         btn.disabled = false;
       }
     });
 
+    async function loadImageForEdit() {
+      if (!editId) return;
+
+      $('page-title').textContent = '이미지 수정';
+      $('form-title').textContent = '기존 이미지 수정';
+      $('save-button').textContent = '수정 완료';
+      $('cancel-edit-button').classList.remove('hidden');
+      $('image-file').required = false;
+      $('file-required-mark').textContent = '(선택)';
+
+      const { data, error } = await supabase
+        .from('daily_images')
+        .select('id,user_id,title,image_date,day_number,image_url,prompt,description,tags')
+        .eq('id', editId)
+        .maybeSingle();
+
+      if (error || !data) {
+        say('form-message', '게시물을 불러오지 못했습니다. 로그인 계정의 조회 권한과 게시물 ID를 확인해 주세요.');
+        $('image-form').classList.add('hidden');
+        return;
+      }
+
+      existingImage = data;
+      $('title').value = data.title || '';
+      $('image-date').value = data.image_date || '';
+      $('day-number').value = data.day_number ?? '';
+      $('prompt').value = data.prompt || '';
+      $('description').value = data.description || '';
+      $('tags').value = Array.isArray(data.tags) ? data.tags.join(', ') : (data.tags || '');
+      if (data.image_url) {
+        $('current-image-preview').src = data.image_url;
+        $('current-image-wrap').classList.remove('hidden');
+      }
+      say('form-message', '기존 정보를 수정한 뒤 “수정 완료”를 누르세요. 이미지를 바꾸지 않으려면 파일을 선택하지 않아도 됩니다.');
+    }
+
+    $('cancel-edit-button').addEventListener('click', () => {
+      window.location.href = './index.html#member-prompts';
+    });
 
 async function setNextDayNumber() {
   const dayInput = document.getElementById('day-number');
@@ -369,10 +450,25 @@ async function setNextDayNumber() {
       }
       supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) await checkMember(session.user); else showLoggedOut();
-      if (session) await setNextDayNumber();
+      if (session) {
+        await checkMember(session.user);
+        if (isApproved) {
+          if (editId) await loadImageForEdit();
+          else await setNextDayNumber();
+        }
+      } else {
+        showLoggedOut();
+      }
       supabase.auth.onAuthStateChange(async (_event, session) => {
-        if (session) await checkMember(session.user); else showLoggedOut();
+        if (session) {
+          await checkMember(session.user);
+          if (isApproved) {
+            if (editId) await loadImageForEdit();
+            else await setNextDayNumber();
+          }
+        } else {
+          showLoggedOut();
+        }
       });
     }
     init();
