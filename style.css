@@ -1142,10 +1142,16 @@ main > .hero {
     min-height: 280px;
   }
 
-  .about-character img {
-    max-width: 280px;
-    max-height: 340px;
-  }
+ 
+.about-character img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: none;
+    object-fit: contain;
+    object-position: center top;
+}
+
 
   .about-character span {
     right: 10px;
