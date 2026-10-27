@@ -145,7 +145,7 @@ async function start() {
   const { data, error } = await supabase.from('public_daily_images')
 
 
-    .select('id,title,image_date,day_number,image_url,tags,description,image_position_x,image_position_y,image_zoom,prompt')
+    .select('id,title,image_date,day_number,image_url,tags,description,image_position_x,image_position_y,image_zoom,prompt,user_id')
 
 
     .order('day_number', { ascending: false });
