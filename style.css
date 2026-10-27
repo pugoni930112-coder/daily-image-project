@@ -1361,13 +1361,25 @@ main > .hero {
 
 
 
-/* 모바일 ABOUT 동영상 잘림 수정 */
+
+/* 모바일 ABOUT 제목과 동영상 배치 수정 */
 @media screen and (max-width: 700px) {
+  .about-heading-with-character {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .about-heading-with-character h2 {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
   .about-loop-character {
-    transform: scale(1);
+    margin-left: 0;
     width: 120px;
     height: 120px;
-    margin-left: 0;
+    transform: none;
+    flex-shrink: 0;
     object-fit: contain;
   }
 }
