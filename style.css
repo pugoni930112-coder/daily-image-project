@@ -1329,17 +1329,26 @@ main > .hero {
 }
 
 /* ABOUT 모바일 이미지 잘림 수정 */
-@media (max-width: 700px) {
-  .about-character {
-    overflow: visible;
-    min-height: auto;
+@media screen and (max-width: 700px) {
+  .about-page .about-hero {
+    grid-template-columns: 1fr;
   }
 
-  .about-character img {
+  .about-page .about-character {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    border-radius: 24px;
+  }
+
+  .about-page .about-character img {
+    display: block;
     width: 100%;
     max-width: 100%;
     max-height: none;
     height: auto;
     object-fit: contain;
+    object-position: center;
   }
 }
