@@ -861,7 +861,7 @@ main > .hero {
   position: relative;
   border-radius: 48% 48% 12px 12px;
   background: #e3c6a7;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .about-character img {
