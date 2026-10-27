@@ -1360,11 +1360,14 @@ main > .hero {
 }
 
 
-/* 모바일 ABOUT 캐릭터 이미지 잘림 수정 */
-@media (max-width: 768px) {
-  .about-character img {
-    width: 100%;
-    height: auto;
+
+/* 모바일 ABOUT 동영상 잘림 수정 */
+@media screen and (max-width: 700px) {
+  .about-loop-character {
+    transform: scale(1);
+    width: 120px;
+    height: 120px;
+    margin-left: 0;
     object-fit: contain;
   }
 }
